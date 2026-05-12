@@ -1,0 +1,27 @@
+[Unit]
+Description=salt-cisco-mcp MCP server for Salt-driven Cisco automation
+Documentation=https://github.com/Muminur/salt-mcp-server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=salt-mcp
+Group=salt-mcp
+ExecStart=/usr/local/bin/salt-cisco-mcp serve --transport http --host 127.0.0.1 --port 7842
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=salt-cisco-mcp
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/salt-mcp /var/log/salt-mcp
+PrivateTmp=true
+PrivateDevices=true
+
+[Install]
+WantedBy=multi-user.target

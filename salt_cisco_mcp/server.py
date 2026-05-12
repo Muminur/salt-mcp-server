@@ -148,6 +148,13 @@ def create_server(settings: Settings | None = None) -> FastMCP[AppState]:
     state_show_sls.register(mcp, settings)
     state_test.register(mcp, settings)
 
+    # Register write tools only when explicitly enabled
+    if settings.server.allow_write:
+        from salt_cisco_mcp.tools import push_config, state_apply
+
+        state_apply.register(mcp, settings)
+        push_config.register(mcp, settings)
+
     # Register prompts
     from salt_cisco_mcp.prompts import (
         debug_failing_state,

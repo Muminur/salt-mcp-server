@@ -77,6 +77,28 @@ _STATE_SLS_TEST = {
     }
 }
 
+_STATE_SLS_APPLY = {
+    "deny_ssh_acl_|-deny-ssh-from-rfc1918_|-deny-ssh-from-rfc1918_|-managed": {
+        "name": "deny-ssh-from-rfc1918",
+        "comment": "Applied successfully",
+        "changes": {"new": "ACL entry deny SSH from 10.0.0.0/8 added"},
+        "result": True,
+        "duration": 15.2,
+    }
+}
+
+_NET_LOAD_CONFIG = {
+    "result": True,
+    "comment": "Merged successfully",
+    "diff": "+hostname router1",
+}
+
+_NET_LOAD_REPLACE = {
+    "result": True,
+    "comment": "Replaced successfully",
+    "diff": "+hostname router1\n-hostname old-router1",
+}
+
 _ARGSPEC = {
     "ntp.set_servers": {
         "func": "ntp.set_servers",
@@ -148,6 +170,13 @@ elif func == "test.ping":
 elif func == "state.show_sls":
     print(json.dumps({"local": _STATE_SHOW_SLS}))
 elif func == "state.sls":
-    print(json.dumps({"local": _STATE_SLS_TEST}))
+    if "test=True" in func_args:
+        print(json.dumps({"local": _STATE_SLS_TEST}))
+    else:
+        print(json.dumps({"local": _STATE_SLS_APPLY}))
+elif func == "net.load_config":
+    print(json.dumps({"local": _NET_LOAD_CONFIG}))
+elif func == "net.load_replace_candidate":
+    print(json.dumps({"local": _NET_LOAD_REPLACE}))
 else:
     print(json.dumps({"local": None}))

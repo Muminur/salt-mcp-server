@@ -38,11 +38,31 @@ class AppState:
     function_cache: FunctionCache | None = field(default=None)
 
 
+def _check_write_mode(settings: Settings) -> list[str]:
+    """Return warning messages for potentially dangerous write-mode configuration."""
+    warnings: list[str] = []
+    if settings.server.allow_write:
+        warnings.append(
+            "WRITE MODE ENABLED: state_apply and push_config are active. "
+            "All write calls require a valid confirm_token."
+        )
+        if not settings.server.confirm_token:
+            warnings.append(
+                "allow_write=True but confirm_token is not set — "
+                "all write tool calls will return errors until confirm_token is configured"
+            )
+    return warnings
+
+
 def _make_lifespan(settings: Settings) -> Any:
     """Return a lifespan context manager bound to *settings*."""
 
     @asynccontextmanager
     async def _lifespan(app: FastMCP[AppState]) -> AsyncGenerator[AppState, None]:
+        # Emit warnings for potentially dangerous configuration
+        for warning in _check_write_mode(settings):
+            logger.warning(warning)
+
         # Verify salt-call is reachable
         salt_call_path = settings.salt_master.salt_call_path
         salt_call_found = shutil.which(salt_call_path)

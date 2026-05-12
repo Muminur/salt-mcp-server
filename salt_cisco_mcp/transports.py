@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hmac
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -27,7 +28,8 @@ class BearerTokenMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         auth = request.headers.get("Authorization", "")
-        if auth == f"Bearer {self._token}":
+        expected = f"Bearer {self._token}"
+        if hmac.compare_digest(auth, expected):
             return await call_next(request)
         return Response("Unauthorized", status_code=401, media_type="text/plain")
 

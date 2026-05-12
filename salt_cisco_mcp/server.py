@@ -1,4 +1,4 @@
-"""FastMCP server instance and lifespan for salt-cisco-mcp."""
+"""FastMCP server instance, AppState, and lifespan for salt-cisco-mcp."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import logging
 import shutil
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
@@ -23,11 +24,19 @@ _INSTRUCTIONS = (
 )
 
 
+@dataclass
+class AppState:
+    """Lifespan state shared across all tool handlers."""
+
+    store: DocStore
+    settings: Settings
+
+
 def _make_lifespan(settings: Settings) -> Any:
     """Return a lifespan context manager bound to *settings*."""
 
     @asynccontextmanager
-    async def _lifespan(app: FastMCP[None]) -> AsyncGenerator[None, None]:
+    async def _lifespan(app: FastMCP[AppState]) -> AsyncGenerator[AppState, None]:
         # Verify salt-call is reachable
         salt_call_found = shutil.which(settings.salt_master.salt_call_path)
         if salt_call_found:
@@ -52,7 +61,7 @@ def _make_lifespan(settings: Settings) -> Any:
         store.init_schema()
         logger.info("DocStore opened", extra={"db": settings.paths.doc_db})
         try:
-            yield
+            yield AppState(store=store, settings=settings)
         finally:
             store.close()
             logger.info("DocStore closed")
@@ -60,14 +69,25 @@ def _make_lifespan(settings: Settings) -> Any:
     return _lifespan
 
 
-def create_server(settings: Settings | None = None) -> FastMCP[None]:
-    """Create and return the FastMCP server instance."""
+def create_server(settings: Settings | None = None) -> FastMCP[AppState]:
+    """Create and return the FastMCP server instance with all tools registered."""
     if settings is None:
         settings = Settings()
-    return FastMCP(
+
+    mcp: FastMCP[AppState] = FastMCP(
         name="salt-cisco-mcp",
         instructions=_INSTRUCTIONS,
         lifespan=_make_lifespan(settings),
         host=settings.server.http_host,
         port=settings.server.http_port,
     )
+
+    # Register tools
+    from salt_cisco_mcp.tools import get_doc, list_modules, live_fetch, search_docs
+
+    search_docs.register(mcp, settings)
+    get_doc.register(mcp, settings)
+    list_modules.register(mcp, settings)
+    live_fetch.register(mcp, settings)
+
+    return mcp

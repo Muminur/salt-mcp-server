@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -28,10 +29,11 @@ def test_server_has_instructions() -> None:
 
 
 @pytest.mark.anyio
-async def test_server_list_tools_empty_initially() -> None:
+async def test_server_list_tools_has_registered_tools() -> None:
     srv = create_server(Settings())
     tools = await srv.list_tools()
-    assert tools == []
+    tool_names = {t.name for t in tools}
+    assert {"search_docs", "get_doc", "list_modules", "live_fetch"} <= tool_names
 
 
 @pytest.mark.anyio
@@ -42,14 +44,13 @@ async def test_server_list_tools_returns_list() -> None:
 
 
 @pytest.mark.anyio
-async def test_lifespan_runs_without_error(tmp_path: pytest.TempPathFactory) -> None:
+async def test_lifespan_runs_without_error(tmp_path: Path) -> None:
     """Lifespan enter/exit must not raise."""
     from salt_cisco_mcp.server import _make_lifespan
 
     settings = Settings()
-    db_path = str(tmp_path / "test.db")  # type: ignore[operator]
-    settings.paths.doc_db = db_path  # type: ignore[assignment]
-
+    db_path = str(tmp_path / "test.db")
+    settings.paths.doc_db = db_path
     srv = create_server(settings)
     lifespan = _make_lifespan(settings)
     async with lifespan(srv):
@@ -57,14 +58,13 @@ async def test_lifespan_runs_without_error(tmp_path: pytest.TempPathFactory) -> 
 
 
 @pytest.mark.anyio
-async def test_lifespan_closes_store_on_exit(tmp_path: pytest.TempPathFactory) -> None:
+async def test_lifespan_closes_store_on_exit(tmp_path: Path) -> None:
     """DocStore must be closed after lifespan exits."""
     from salt_cisco_mcp.server import _make_lifespan
 
     settings = Settings()
-    db_path = str(tmp_path / "test.db")  # type: ignore[operator]
-    settings.paths.doc_db = db_path  # type: ignore[assignment]
-
+    db_path = str(tmp_path / "test.db")
+    settings.paths.doc_db = db_path
     srv = create_server(settings)
     closed_stores: list[object] = []
 
@@ -86,15 +86,14 @@ async def test_lifespan_closes_store_on_exit(tmp_path: pytest.TempPathFactory) -
 
 @pytest.mark.anyio
 async def test_lifespan_logs_warning_when_salt_call_missing(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: Path,
 ) -> None:
     """Lifespan logs a warning when salt-call is not on PATH."""
     from salt_cisco_mcp.server import _make_lifespan
 
     settings = Settings()
-    db_path = str(tmp_path / "test.db")  # type: ignore[operator]
-    settings.paths.doc_db = db_path  # type: ignore[assignment]
-
+    db_path = str(tmp_path / "test.db")
+    settings.paths.doc_db = db_path
     srv = create_server(settings)
     lifespan = _make_lifespan(settings)
 
@@ -104,14 +103,13 @@ async def test_lifespan_logs_warning_when_salt_call_missing(
 
 
 @pytest.mark.anyio
-async def test_lifespan_logs_salt_call_found(tmp_path: pytest.TempPathFactory) -> None:
+async def test_lifespan_logs_salt_call_found(tmp_path: Path) -> None:
     """Lifespan logs info when salt-call is found."""
     from salt_cisco_mcp.server import _make_lifespan
 
     settings = Settings()
-    db_path = str(tmp_path / "test.db")  # type: ignore[operator]
-    settings.paths.doc_db = db_path  # type: ignore[assignment]
-
+    db_path = str(tmp_path / "test.db")
+    settings.paths.doc_db = db_path
     srv = create_server(settings)
     lifespan = _make_lifespan(settings)
 
@@ -122,15 +120,14 @@ async def test_lifespan_logs_salt_call_found(tmp_path: pytest.TempPathFactory) -
 
 @pytest.mark.anyio
 async def test_lifespan_handles_fastembed_unavailable(
-    tmp_path: pytest.TempPathFactory,
+    tmp_path: Path,
 ) -> None:
     """Lifespan does not raise when fastembed is not installed."""
     from salt_cisco_mcp.server import _make_lifespan
 
     settings = Settings()
-    db_path = str(tmp_path / "test.db")  # type: ignore[operator]
-    settings.paths.doc_db = db_path  # type: ignore[assignment]
-
+    db_path = str(tmp_path / "test.db")
+    settings.paths.doc_db = db_path
     srv = create_server(settings)
     lifespan = _make_lifespan(settings)
 

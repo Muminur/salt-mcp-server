@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import anyio
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
@@ -43,7 +43,7 @@ def _read_bearer_token(settings: Settings) -> str | None:
     return path.read_text(encoding="utf-8").strip()
 
 
-def build_http_app(mcp: FastMCP[None], settings: Settings) -> ASGIApp:
+def build_http_app(mcp: FastMCP[Any], settings: Settings) -> ASGIApp:
     """Build the Starlette ASGI app, wrapping with bearer auth when configured."""
     base_app: ASGIApp = mcp.streamable_http_app()
     token = _read_bearer_token(settings)

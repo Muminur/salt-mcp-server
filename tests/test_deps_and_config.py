@@ -1,7 +1,7 @@
 import importlib
 from pathlib import Path
 
-import tomllib
+import tomllib  # type: ignore[import-not-found]
 
 
 def test_import_mcp() -> None:

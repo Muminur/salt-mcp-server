@@ -7,8 +7,9 @@ from pathlib import Path
 import anyio
 import pytest
 from mcp import ClientSession
+from mcp.types import Tool
 
-from salt_cisco_mcp.config import SecurityConfig, Settings
+from salt_cisco_mcp.config import HttpAuthConfig, SecurityConfig, Settings
 from salt_cisco_mcp.server import create_server
 
 # ---------------------------------------------------------------------------
@@ -17,11 +18,12 @@ from salt_cisco_mcp.server import create_server
 
 
 @pytest.mark.anyio
-async def test_in_memory_list_tools_empty() -> None:
-    """Fresh server has no tools registered."""
+async def test_in_memory_list_tools_has_registered_tools() -> None:
+    """create_server registers all four tools."""
     srv = create_server(Settings())
     tools = await srv.list_tools()
-    assert tools == []
+    tool_names = {t.name for t in tools}
+    assert {"search_docs", "get_doc", "list_modules", "live_fetch"} <= tool_names
 
 
 @pytest.mark.anyio
@@ -64,15 +66,14 @@ async def test_in_memory_list_resources_empty() -> None:
 async def test_stdio_round_trip_list_tools(tmp_path: Path) -> None:
     """Full JSON-RPC round-trip via in-process memory streams."""
     settings = Settings()
-    settings.paths.doc_db = str(tmp_path / "rt.db")  # type: ignore[assignment]
-
+    settings.paths.doc_db = str(tmp_path / "rt.db")
     srv = create_server(settings)
     init_opts = srv._mcp_server.create_initialization_options()
 
     s_in_send, s_in_recv = anyio.create_memory_object_stream(100)
     s_out_send, s_out_recv = anyio.create_memory_object_stream(100)
 
-    tools_result: list[object] = []
+    tools_result: list[Tool] = []
 
     async def _run_server() -> None:
         try:
@@ -90,15 +91,15 @@ async def test_stdio_round_trip_list_tools(tmp_path: Path) -> None:
         tg.start_soon(_run_server)
         tg.start_soon(_run_client)
 
-    assert tools_result == []
+    tool_names = {t.name for t in tools_result}
+    assert {"search_docs", "get_doc", "list_modules", "live_fetch"} <= tool_names
 
 
 @pytest.mark.anyio
 async def test_stdio_round_trip_list_prompts(tmp_path: Path) -> None:
     """Prompts list is empty over full JSON-RPC round-trip."""
     settings = Settings()
-    settings.paths.doc_db = str(tmp_path / "rtp.db")  # type: ignore[assignment]
-
+    settings.paths.doc_db = str(tmp_path / "rtp.db")
     srv = create_server(settings)
     init_opts = srv._mcp_server.create_initialization_options()
 
@@ -141,8 +142,8 @@ def test_http_bearer_rejects_unauthenticated(tmp_path: Path) -> None:
     token_file.write_text("s3cr3t-http-token")
 
     settings = Settings(
-        security=SecurityConfig(  # type: ignore[arg-type]
-            http_auth={"mode": "bearer", "bearer_token_file": str(token_file)}
+        security=SecurityConfig(
+            http_auth=HttpAuthConfig(mode="bearer", bearer_token_file=str(token_file))
         )
     )
     srv = create_server(settings)
@@ -165,8 +166,8 @@ def test_http_bearer_accepts_valid_token(tmp_path: Path) -> None:
     token_file.write_text("valid-token")
 
     settings = Settings(
-        security=SecurityConfig(  # type: ignore[arg-type]
-            http_auth={"mode": "bearer", "bearer_token_file": str(token_file)}
+        security=SecurityConfig(
+            http_auth=HttpAuthConfig(mode="bearer", bearer_token_file=str(token_file))
         )
     )
     srv = create_server(settings)

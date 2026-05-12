@@ -51,6 +51,7 @@ class PathsConfig(BaseModel):
     recipes: str = "/usr/share/salt-mcp/recipes"
     log_file: str = "/var/log/salt-mcp/server.log"
     audit_log: str = "~/.salt-mcp/audit.jsonl"
+    live_cache: str = "/var/lib/salt-mcp/live-cache"
 
 
 class SaltMasterConfig(BaseModel):
@@ -94,6 +95,7 @@ class NetworkConfig(BaseModel):
     rate_limit_per_min: int = 60
     user_agent: str = "salt-cisco-mcp/1.0"
     request_timeout_s: int = 15
+    live_cache_ttl_s: int = 3600
 
 
 class ScrapeConfig(BaseModel):

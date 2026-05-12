@@ -31,6 +31,9 @@ def search_docs_logic(
     top_k: int = 10,
     token_budget: int | None = None,
     low_confidence_threshold: float = 1.0,
+    *,
+    live_fallback_enabled: bool = False,
+    upstream_base: str = "",
 ) -> dict[str, Any]:
     """Core retrieval logic — no MCP dependencies, fully unit-testable."""
     if not query or not query.strip():
@@ -63,7 +66,10 @@ def search_docs_logic(
             }
         )
 
-    return {"results": items, "low_confidence": low_confidence, "total": len(items)}
+    out: dict[str, Any] = {"results": items, "low_confidence": low_confidence, "total": len(items)}
+    if len(items) == 0 and live_fallback_enabled and upstream_base:
+        out["live_fallback_hint"] = upstream_base
+    return out
 
 
 def register(mcp: FastMCP[Any], settings: Settings) -> None:
@@ -89,4 +95,6 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
             top_k=top_k,
             token_budget=budget,
             low_confidence_threshold=settings.retrieval.low_confidence_bm25,
+            live_fallback_enabled=settings.network.live_fallback,
+            upstream_base=settings.network.upstream_base,
         )

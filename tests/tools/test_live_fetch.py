@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from salt_cisco_mcp.tools.live_fetch import live_fetch_logic
@@ -25,7 +27,7 @@ async def test_live_fetch_blocks_disallowed_domain() -> None:
 
 
 @pytest.mark.anyio
-async def test_live_fetch_returns_content_for_allowed_url(httpx_mock: None = None) -> None:
+async def test_live_fetch_returns_content_for_allowed_url(tmp_path: Path) -> None:
     """With a mock client, live_fetch returns content for allowed domain."""
     import httpx
 
@@ -38,7 +40,9 @@ async def test_live_fetch_returns_content_for_allowed_url(httpx_mock: None = Non
             )
 
     client = httpx.AsyncClient(transport=_Mock())
-    result = await live_fetch_logic(_ALLOWED_URL, network_enabled=True, client=client)
+    result = await live_fetch_logic(
+        _ALLOWED_URL, network_enabled=True, cache_dir=str(tmp_path), client=client
+    )
     await client.aclose()
     assert isinstance(result, dict)
     assert result.get("error") is None
@@ -46,7 +50,7 @@ async def test_live_fetch_returns_content_for_allowed_url(httpx_mock: None = Non
 
 
 @pytest.mark.anyio
-async def test_live_fetch_source_field_indicates_live() -> None:
+async def test_live_fetch_source_field_indicates_live(tmp_path: Path) -> None:
     """Result carries source='live' when fetched successfully."""
     import httpx
 
@@ -55,6 +59,8 @@ async def test_live_fetch_source_field_indicates_live() -> None:
             return httpx.Response(200, content=b"<html><body>ok</body></html>", headers={})
 
     client = httpx.AsyncClient(transport=_Mock())
-    result = await live_fetch_logic(_ALLOWED_URL, network_enabled=True, client=client)
+    result = await live_fetch_logic(
+        _ALLOWED_URL, network_enabled=True, cache_dir=str(tmp_path), client=client
+    )
     await client.aclose()
     assert result.get("source") == "live"

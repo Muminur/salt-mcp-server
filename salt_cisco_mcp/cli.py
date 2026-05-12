@@ -102,6 +102,7 @@ def main(argv: list[str] | None = None) -> None:
         code = run_verify(
             salt_call_path=settings.salt_master.salt_call_path,
             doc_db_path=settings.paths.doc_db,
+            metrics_dir=settings.telemetry.metrics_dir,
         )
         sys.exit(code)
 

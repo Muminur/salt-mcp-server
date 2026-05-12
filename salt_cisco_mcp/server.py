@@ -13,6 +13,7 @@ from mcp.server.fastmcp import FastMCP
 
 from salt_cisco_mcp.config import Settings
 from salt_cisco_mcp.docs.store import DocStore
+from salt_cisco_mcp.observability.metrics import MetricsStore
 from salt_cisco_mcp.salt_master.adapter import SaltCallAdapter
 from salt_cisco_mcp.salt_master.module_introspect import FunctionCache
 
@@ -32,6 +33,7 @@ class AppState:
 
     store: DocStore
     settings: Settings
+    metrics: MetricsStore = field(default_factory=MetricsStore)
     adapter: SaltCallAdapter | None = field(default=None)
     function_cache: FunctionCache | None = field(default=None)
 
@@ -77,10 +79,13 @@ def _make_lifespan(settings: Settings) -> Any:
             )
             function_cache = FunctionCache(adapter)
 
+        metrics = MetricsStore()
+        metrics.set_gauge("salt_mcp_doc_chunks_total", float(store.count_chunks()))
         try:
             yield AppState(
                 store=store,
                 settings=settings,
+                metrics=metrics,
                 adapter=adapter,
                 function_cache=function_cache,
             )

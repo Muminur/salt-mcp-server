@@ -22,9 +22,7 @@ def _make_redact_processor(
 ) -> Callable[[Any, str, dict[str, Any]], dict[str, Any]]:
     lower_keys = frozenset(k.lower() for k in redact_keys)
 
-    def _processor(
-        _logger: Any, _method: str, event_dict: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _processor(_logger: Any, _method: str, event_dict: dict[str, Any]) -> dict[str, Any]:
         for key in list(event_dict):
             if isinstance(key, str) and key.lower() in lower_keys:
                 event_dict[key] = "***"

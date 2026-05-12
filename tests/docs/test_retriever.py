@@ -61,8 +61,15 @@ def test_bm25_search_empty_store_returns_empty() -> None:
 
 def test_trim_to_budget_respects_limit() -> None:
     sr_with_tokens = [
-        SearchResult(chunk_id=i, text="word " * 50, anchor=f"#a{i}",
-                     heading="h", kind="module", score=1.0, doc_hash="h")
+        SearchResult(
+            chunk_id=i,
+            text="word " * 50,
+            anchor=f"#a{i}",
+            heading="h",
+            kind="module",
+            score=1.0,
+            doc_hash="h",
+        )
         for i in range(10)
     ]
     trimmed = trim_to_budget(sr_with_tokens, token_budget=100)
@@ -76,8 +83,15 @@ def test_trim_to_budget_empty_input_returns_empty() -> None:
 
 def test_trim_to_budget_keeps_all_if_under_budget() -> None:
     results = [
-        SearchResult(chunk_id=i, text=f"short text {i}", anchor=f"#a{i}",
-                     heading="h", kind="module", score=1.0, doc_hash="h")
+        SearchResult(
+            chunk_id=i,
+            text=f"short text {i}",
+            anchor=f"#a{i}",
+            heading="h",
+            kind="module",
+            score=1.0,
+            doc_hash="h",
+        )
         for i in range(3)
     ]
     trimmed = trim_to_budget(results, token_budget=10000)

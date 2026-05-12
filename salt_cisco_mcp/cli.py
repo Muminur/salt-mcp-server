@@ -61,14 +61,24 @@ def main(argv: list[str] | None = None) -> None:
     configure_logging(settings)
 
     if args.command == "serve":
-        print("serve: not implemented yet (Milestone 3)", file=sys.stderr)
-        sys.exit(0)
+        if args.transport:
+            settings.server.transport = args.transport
+        if args.host:
+            settings.server.http_host = args.host
+        if args.port:
+            settings.server.http_port = args.port
+        if args.allow_write:
+            settings.server.allow_write = True
+        from salt_cisco_mcp.transports import run_server
+
+        run_server(settings)
 
     if args.command == "install":
         print("install: not implemented yet (Milestone 13)", file=sys.stderr)
         sys.exit(0)
 
     if args.command == "scrape":
+
         async def _run_scrape() -> None:
             stats = await scrape_docs(settings, settings.paths.doc_db)
             print(

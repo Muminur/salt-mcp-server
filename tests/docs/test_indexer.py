@@ -13,10 +13,16 @@ _META = PageMeta(
 )
 
 _CHUNKS = [
-    Chunk(text="Configure IOS interface.", heading="IOS", anchor="#ios-0", token_count=3,
-          kind="module"),
-    Chunk(text="Apply IOS ACL rules.", heading="IOS", anchor="#ios-1", token_count=4,
-          kind="module"),
+    Chunk(
+        text="Configure IOS interface.",
+        heading="IOS",
+        anchor="#ios-0",
+        token_count=3,
+        kind="module",
+    ),
+    Chunk(
+        text="Apply IOS ACL rules.", heading="IOS", anchor="#ios-1", token_count=4, kind="module"
+    ),
 ]
 
 

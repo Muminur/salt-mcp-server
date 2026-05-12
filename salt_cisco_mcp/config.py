@@ -8,11 +8,29 @@ from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, Settings
 
 _DEFAULT_YAML_PATH = "/etc/salt/mcp/config.yaml"
 _DEFAULT_REDACT_KEYS = [
-    "password", "passwd", "pass", "secret", "enable_password", "enable_secret",
-    "api_key", "api-key", "token", "auth_token", "bearer", "bearer_token",
-    "community", "snmp_community", "tacacs_key", "radius_key", "shared_secret",
-    "pre_shared_key", "psk", "passphrase", "private_key",
-    "credential", "credentials",
+    "password",
+    "passwd",
+    "pass",
+    "secret",
+    "enable_password",
+    "enable_secret",
+    "api_key",
+    "api-key",
+    "token",
+    "auth_token",
+    "bearer",
+    "bearer_token",
+    "community",
+    "snmp_community",
+    "tacacs_key",
+    "radius_key",
+    "shared_secret",
+    "pre_shared_key",
+    "psk",
+    "passphrase",
+    "private_key",
+    "credential",
+    "credentials",
 ]
 
 

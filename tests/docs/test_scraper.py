@@ -1,4 +1,5 @@
 """Tests for the async scraper (mocked HTTP — no real network calls)."""
+
 from __future__ import annotations
 
 import httpx

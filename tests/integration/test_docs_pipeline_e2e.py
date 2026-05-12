@@ -1,4 +1,5 @@
 """End-to-end integration test: HTML → normalize → chunk → index → FTS search."""
+
 from salt_cisco_mcp.docs.chunker import chunk_page
 from salt_cisco_mcp.docs.indexer import compute_doc_hash, index_page
 from salt_cisco_mcp.docs.normalizer import normalize_page

@@ -12,7 +12,7 @@ class PageMeta:
     title: str
     anchor: str
     breadcrumb: str
-    kind: str          # "module" | "state" | "proxy" | "runner" | "grain" | "other"
+    kind: str  # "module" | "state" | "proxy" | "runner" | "grain" | "other"
     salt_version: str  # always "3007"
     url: str
 
@@ -47,6 +47,7 @@ def _extract_salt_version(url: str) -> str:
 def _build_breadcrumb(url: str, salt_version: str) -> str:
     try:
         from urllib.parse import urlparse
+
         parsed = urlparse(url)
         parts = [p for p in parsed.path.split("/") if p and p != salt_version and p != "en"]
         return "Salt " + salt_version + " > " + " > ".join(parts)

@@ -58,8 +58,12 @@ def test_store_count_chunks_increments() -> None:
     assert store.count_chunks() == 1
     chunk2 = Chunk(text="Another chunk.", heading="X", anchor="#x-0", token_count=2, kind="module")
     meta2 = PageMeta(
-        title="X", anchor="#x", breadcrumb="", kind="module",
-        salt_version="3007", url="https://docs.saltproject.io/en/3007/x.html"
+        title="X",
+        anchor="#x",
+        breadcrumb="",
+        kind="module",
+        salt_version="3007",
+        url="https://docs.saltproject.io/en/3007/x.html",
     )
     store.upsert_chunk(chunk2, meta2, doc_hash="h2")
     assert store.count_chunks() == 2

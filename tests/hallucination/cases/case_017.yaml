@@ -1,0 +1,11 @@
+id: case-017
+prompt: "How do I get OSPF neighbor information from a router managed by Salt?"
+expected_modules:
+  - ospf
+  - napalm
+expected_functions:
+  - ospf.neighbors
+  - napalm.cli
+must_not_hallucinate:
+  - ospf.get_neighbors
+  - napalm.ospf_summary

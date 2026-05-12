@@ -1,0 +1,11 @@
+id: case-024
+prompt: "How do I verify that a route exists in the routing table using Salt?"
+expected_modules:
+  - route
+  - napalm
+expected_functions:
+  - route.get
+  - napalm.route
+must_not_hallucinate:
+  - route.verify
+  - routing.check_prefix

@@ -1,0 +1,11 @@
+id: case-026
+prompt: "How do I use Salt config module to fetch a setting from a Cisco device pillar?"
+expected_modules:
+  - config
+  - pillar
+expected_functions:
+  - config.get
+  - pillar.get
+must_not_hallucinate:
+  - config.fetch_device
+  - pillar.device_config

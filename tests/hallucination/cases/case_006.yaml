@@ -1,0 +1,10 @@
+id: case-006
+prompt: "Show me how to use Salt grains to identify Cisco device platform type."
+expected_modules:
+  - grains
+expected_functions:
+  - grains.get
+  - grains.items
+must_not_hallucinate:
+  - grains.cisco_platform
+  - grains.vendor_info

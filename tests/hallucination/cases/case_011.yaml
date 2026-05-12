@@ -1,0 +1,9 @@
+id: case-011
+prompt: "How do I use Salt to show the ARP table of a Cisco router?"
+expected_modules:
+  - napalm
+expected_functions:
+  - napalm.arp
+must_not_hallucinate:
+  - napalm.get_arp
+  - arp.show

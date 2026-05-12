@@ -1,0 +1,11 @@
+id: case-020
+prompt: "How do I configure AAA on Cisco IOS with Salt using a template?"
+expected_modules:
+  - aaa
+  - napalm
+expected_functions:
+  - aaa.config
+  - napalm.load_template
+must_not_hallucinate:
+  - aaa.configure_radius
+  - ios.aaa_new_model

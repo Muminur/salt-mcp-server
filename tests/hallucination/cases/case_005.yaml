@@ -1,0 +1,9 @@
+id: case-005
+prompt: "How do I check if a Salt minion is reachable before applying a state?"
+expected_modules:
+  - test
+expected_functions:
+  - test.ping
+must_not_hallucinate:
+  - test.is_alive
+  - minion.ping

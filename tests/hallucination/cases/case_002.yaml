@@ -1,0 +1,10 @@
+id: case-002
+prompt: "How do I retrieve BGP neighbor status from all Cisco routers via Salt?"
+expected_modules:
+  - napalm
+expected_functions:
+  - napalm.bgp_neighbors
+  - napalm.bgp_neighbors_detail
+must_not_hallucinate:
+  - napalm.get_bgp_neighbors
+  - napalm.bgp_status

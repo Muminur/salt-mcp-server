@@ -1,0 +1,11 @@
+id: case-001
+prompt: "How do I configure NTP servers on a Cisco IOS router using Salt napalm proxy?"
+expected_modules:
+  - ntp
+  - napalm
+expected_functions:
+  - ntp.set_servers
+  - napalm.load_template
+must_not_hallucinate:
+  - ntp.configure_server
+  - ntp.add_peer

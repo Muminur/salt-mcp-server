@@ -1,0 +1,11 @@
+id: case-007
+prompt: "How do I configure SNMP community strings on Cisco NX-OS via Salt pillar?"
+expected_modules:
+  - pillar
+  - snmp
+expected_functions:
+  - pillar.get
+  - snmp.config
+must_not_hallucinate:
+  - snmp.set_community
+  - snmp.configure_v2c

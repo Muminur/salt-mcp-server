@@ -1,0 +1,10 @@
+id: case-022
+prompt: "How do I test a Salt state without applying it to a Cisco device?"
+expected_modules:
+  - state
+expected_functions:
+  - state.show_sls
+  - state.sls
+must_not_hallucinate:
+  - state.dry_run
+  - state.preview

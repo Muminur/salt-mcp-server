@@ -1,0 +1,12 @@
+id: case-029
+prompt: "How do I use Salt to check if an NTP server is reachable from a Cisco device?"
+expected_modules:
+  - ntp
+  - napalm
+expected_functions:
+  - ntp.show_ntp_peers
+  - ntp.show_ntp_stats
+  - napalm.ping
+must_not_hallucinate:
+  - ntp.verify_server
+  - ntp.test_connectivity

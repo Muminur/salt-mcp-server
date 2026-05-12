@@ -1,0 +1,11 @@
+id: case-015
+prompt: "How do I list all interfaces on a network device with Salt?"
+expected_modules:
+  - napalm
+  - interface
+expected_functions:
+  - napalm.interfaces
+  - interface.list
+must_not_hallucinate:
+  - interface.get_all
+  - napalm.show_interfaces

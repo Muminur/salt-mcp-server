@@ -1,0 +1,10 @@
+id: case-009
+prompt: "How do I push a config file to a Cisco device using Salt cp module?"
+expected_modules:
+  - cp
+expected_functions:
+  - cp.get_file
+  - cp.get_url
+must_not_hallucinate:
+  - cp.push_config
+  - cp.upload_file

@@ -1,0 +1,10 @@
+id: case-028
+prompt: "How do I use Salt ISIS module to check IS-IS adjacencies?"
+expected_modules:
+  - isis
+expected_functions:
+  - isis.neighbors
+  - isis.interfaces
+must_not_hallucinate:
+  - isis.adjacencies
+  - routing.isis_check

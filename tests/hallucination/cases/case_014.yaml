@@ -1,0 +1,11 @@
+id: case-014
+prompt: "How do I retrieve BGP configuration from a Cisco device using Salt?"
+expected_modules:
+  - napalm
+  - bgp
+expected_functions:
+  - napalm.bgp_config
+  - bgp.config
+must_not_hallucinate:
+  - bgp.get_configuration
+  - napalm.fetch_bgp

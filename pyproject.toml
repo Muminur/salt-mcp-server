@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "salt-cisco-mcp"
+dynamic = ["version"]
+description = "Offline-first MCP server for Salt-driven Cisco IOS/IOS-XR/NX-OS automation"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10,<3.13"
+authors = [{ name = "salt-cisco-mcp contributors" }]
+
+[project.scripts]
+salt-cisco-mcp = "salt_cisco_mcp.cli:main"
+
+[tool.hatch.version]
+path = "salt_cisco_mcp/__init__.py"

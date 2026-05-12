@@ -142,6 +142,25 @@ def create_server(settings: Settings | None = None) -> FastMCP[AppState]:
     audit_cisco_config.register(mcp, settings)
     generate_pillar.register(mcp, settings)
 
+    # Register dry-run tools
+    from salt_cisco_mcp.tools import state_show_sls, state_test
+
+    state_show_sls.register(mcp, settings)
+    state_test.register(mcp, settings)
+
+    # Register prompts
+    from salt_cisco_mcp.prompts import (
+        debug_failing_state,
+        draft_state_for_cisco,
+        generate_proxy_pillar,
+        migrate_legacy_syntax,
+    )
+
+    draft_state_for_cisco.register(mcp, settings)
+    debug_failing_state.register(mcp, settings)
+    migrate_legacy_syntax.register(mcp, settings)
+    generate_proxy_pillar.register(mcp, settings)
+
     # Register docs resources
     from salt_cisco_mcp.resources import salt_docs as salt_docs_resources
 

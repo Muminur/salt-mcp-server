@@ -44,10 +44,11 @@ async def test_in_memory_call_unknown_tool_raises() -> None:
 
 
 @pytest.mark.anyio
-async def test_in_memory_list_prompts_empty() -> None:
+async def test_in_memory_list_prompts() -> None:
     srv = create_server(Settings())
     prompts = await srv.list_prompts()
-    assert prompts == []
+    prompt_names = {p.name for p in prompts}
+    assert {"draft_state_for_cisco", "debug_failing_state"} <= prompt_names
 
 
 @pytest.mark.anyio
@@ -97,7 +98,7 @@ async def test_stdio_round_trip_list_tools(tmp_path: Path) -> None:
 
 @pytest.mark.anyio
 async def test_stdio_round_trip_list_prompts(tmp_path: Path) -> None:
-    """Prompts list is empty over full JSON-RPC round-trip."""
+    """Prompts are advertised over full JSON-RPC round-trip."""
     settings = Settings()
     settings.paths.doc_db = str(tmp_path / "rtp.db")
     srv = create_server(settings)
@@ -124,7 +125,8 @@ async def test_stdio_round_trip_list_prompts(tmp_path: Path) -> None:
         tg.start_soon(_run_server)
         tg.start_soon(_run_client)
 
-    assert prompts_result == []
+    prompt_names = {p.name for p in prompts_result}  # type: ignore[union-attr]
+    assert {"draft_state_for_cisco", "debug_failing_state"} <= prompt_names
 
 
 # ---------------------------------------------------------------------------

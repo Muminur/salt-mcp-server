@@ -27,7 +27,12 @@ def _build_parser() -> argparse.ArgumentParser:
     serve_p.add_argument("--config", metavar="PATH", default=None)
 
     # install
-    sub.add_parser("install", help="Bootstrap the doc index on the Salt master.")
+    install_p = sub.add_parser("install", help="Bootstrap config dirs and write a starter config.")
+    install_p.add_argument("--config-dir", default="/etc/salt/mcp", metavar="PATH")
+    install_p.add_argument("--data-dir", default="/var/lib/salt-mcp", metavar="PATH")
+    install_p.add_argument("--log-dir", default="/var/log/salt-mcp", metavar="PATH")
+    install_p.add_argument("--audit-dir", default="~/.salt-mcp", metavar="PATH")
+    install_p.add_argument("--dry-run", action="store_true", default=False)
 
     # scrape
     sub.add_parser("scrape", help="Re-scrape docs.saltproject.io.")
@@ -74,8 +79,28 @@ def main(argv: list[str] | None = None) -> None:
         run_server(settings)
 
     if args.command == "install":
-        print("install: not implemented yet (Milestone 13)", file=sys.stderr)
-        sys.exit(0)
+        from salt_cisco_mcp.install_cmd import install_logic
+
+        result = install_logic(
+            config_dir=args.config_dir,
+            data_dir=args.data_dir,
+            log_dir=args.log_dir,
+            audit_dir=args.audit_dir,
+            dry_run=args.dry_run,
+        )
+        prefix = "[DRY RUN] " if args.dry_run else ""
+        for d in result.created_dirs:
+            print(f"{prefix}directory: {d}")
+        if result.config_file:
+            print(f"{prefix}config written: {result.config_file}")
+        for w in result.warnings:
+            print(f"WARNING: {w}", file=sys.stderr)
+        if result.success:
+            print("\nNext steps:")
+            print(f"  1. Edit {args.config_dir}/config.yaml")
+            print("  2. Run: salt-cisco-mcp scrape")
+            print("  3. Run: salt-cisco-mcp serve --transport http")
+        sys.exit(0 if result.success else 1)
 
     if args.command == "scrape":
 

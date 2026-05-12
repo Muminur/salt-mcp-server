@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
@@ -16,3 +16,6 @@ salt-cisco-mcp = "salt_cisco_mcp.cli:main"
 
 [tool.hatch.version]
 path = "salt_cisco_mcp/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["salt_cisco_mcp"]

@@ -9,12 +9,16 @@ REDACTED = "<<REDACTED>>"
 _DEFAULT_REDACT_KEYS: frozenset[str] = frozenset(
     {
         "password",
+        "passwd",
         "secret",
         "enable_password",
         "community",
         "token",
         "key",
         "passphrase",
+        "bearer",
+        "psk",
+        "credential",
     }
 )
 

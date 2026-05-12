@@ -1,4 +1,4 @@
-.PHONY: install test lint typecheck fmt scrape serve
+.PHONY: install test lint typecheck fmt scrape serve scan
 
 install:
 	pip install -e ".[dev]"
@@ -20,3 +20,6 @@ scrape:
 
 serve:
 	python -m salt_cisco_mcp.cli serve
+
+scan:
+	pip-audit --strict

@@ -1,0 +1,10 @@
+id: case-050
+prompt: How do I verify interface counters and errors via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.get_interfaces_counters
+- napalm.cli
+must_not_hallucinate:
+- napalm.check_errors
+- napalm.interface_stats

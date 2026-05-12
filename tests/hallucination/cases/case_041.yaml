@@ -1,0 +1,10 @@
+id: case-041
+prompt: How do I create a VLAN on a Cisco NX-OS switch using Salt?
+expected_modules:
+- nxos
+- vlan
+expected_functions:
+- nxos.cmd
+must_not_hallucinate:
+- vlan.create
+- nxos.vlan_add

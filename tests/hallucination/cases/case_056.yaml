@@ -1,0 +1,9 @@
+id: case-056
+prompt: How do I configure QoS policy-map on IOS-XR via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- qos.policy_map
+- napalm.qos_config

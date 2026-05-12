@@ -1,0 +1,10 @@
+id: case-086
+prompt: How do I configure SNMP community strings on all Cisco devices via Salt?
+expected_modules:
+- napalm
+- snmp
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- snmp.set_community
+- napalm.configure_snmp

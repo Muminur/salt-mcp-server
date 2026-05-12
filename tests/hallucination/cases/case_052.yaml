@@ -1,0 +1,9 @@
+id: case-052
+prompt: How do I apply an ACL to an interface using Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- napalm.apply_acl
+- acl.attach_interface

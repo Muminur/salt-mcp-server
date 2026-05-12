@@ -1,0 +1,10 @@
+id: case-078
+prompt: How do I compare running and startup config via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.get_config
+- napalm.cli
+must_not_hallucinate:
+- napalm.compare_configs
+- napalm.diff_config

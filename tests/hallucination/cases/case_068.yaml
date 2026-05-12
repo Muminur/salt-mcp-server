@@ -1,0 +1,10 @@
+id: case-068
+prompt: How do I filter minions by OS grain value via Salt targeting?
+expected_modules:
+- grains
+expected_functions:
+- grains.get
+- grains.items
+must_not_hallucinate:
+- grains.filter_by
+- grains.match_os

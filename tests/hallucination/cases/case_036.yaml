@@ -1,0 +1,11 @@
+id: case-036
+prompt: How do I enable OSPF on all interfaces of a router using Salt?
+expected_modules:
+- ospf
+- napalm
+expected_functions:
+- napalm.load_config
+- napalm.load_template
+must_not_hallucinate:
+- ospf.enable_interface
+- ospf.configure

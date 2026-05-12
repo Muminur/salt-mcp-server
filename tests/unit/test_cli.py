@@ -18,12 +18,14 @@ def test_cli_help_exits_zero() -> None:
 
 
 def test_cli_version_prints_version() -> None:
+    from salt_cisco_mcp import __version__
+
     result = subprocess.run(
         [sys.executable, "-m", "salt_cisco_mcp.cli", "version"],
         capture_output=True,
     )
     assert result.returncode == 0
-    assert b"0.1.0" in result.stdout
+    assert __version__.encode() in result.stdout
 
 
 def test_cli_unknown_subcommand_exits_nonzero() -> None:

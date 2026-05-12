@@ -1,0 +1,10 @@
+id: case-046
+prompt: How do I shut down a specific interface on a Cisco router via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+- napalm.load_template
+must_not_hallucinate:
+- napalm.shutdown_interface
+- napalm.disable_interface

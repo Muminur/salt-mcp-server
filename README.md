@@ -1,66 +1,136 @@
 # salt-cisco-mcp
 
-An offline-first [Model Context Protocol](https://modelcontextprotocol.io) server for Salt-driven Cisco IOS / IOS-XR / NX-OS automation. Grounds coding agents (Claude Code, Codex CLI, GitHub Copilot) in the official Salt 3007 documentation so they stop hallucinating module names and pillar shapes.
+An offline-first [Model Context Protocol](https://modelcontextprotocol.io) server for Salt-driven Cisco IOS / IOS-XR / NX-OS automation. Grounds coding agents (Claude Code, Codex CLI, GitHub Copilot, Continue, Cursor) in the official Salt 3007 documentation so they stop hallucinating module names and pillar shapes.
+
+[![CI](https://github.com/Muminur/salt-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/Muminur/salt-mcp-server/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/salt-cisco-mcp)](https://pypi.org/project/salt-cisco-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/salt-cisco-mcp)](https://pypi.org/project/salt-cisco-mcp/)
+
+---
 
 ## Install
 
 ```bash
-pip install salt-cisco-mcp
-salt-cisco-mcp install   # bootstrap the doc index on the Salt master
+pipx install salt-cisco-mcp
+sudo salt-cisco-mcp install   # create config dirs and starter config.yaml
+salt-cisco-mcp scrape         # build the offline documentation index (~5 min)
+salt-cisco-mcp verify         # confirm everything is ready
 ```
+
+See [docs/install.md](docs/install.md) for full installation instructions, file permissions, and SELinux notes.
+
+---
 
 ## Quickstart
 
-```bash
-# stdio transport (Claude Code / Codex CLI)
-salt-cisco-mcp serve --transport stdio
+### stdio transport (Claude Code / Codex CLI)
 
-# HTTP transport (Copilot Chat / Continue / Cursor)
+```bash
+salt-cisco-mcp serve --transport stdio
+```
+
+Add to Claude Code:
+```bash
+claude mcp add salt-cisco-mcp -- salt-cisco-mcp serve --transport stdio
+```
+
+### HTTP transport (Copilot Chat / Continue / Cursor)
+
+```bash
 salt-cisco-mcp serve --transport http --host 127.0.0.1 --port 7842
 ```
 
-Add to your agent config and call `search_docs`, `validate_pillar`, `confirm_function_exists` before writing any Salt state.
+See `docs/integrations/` for per-agent config snippets.
+
+---
+
+## What it does
+
+Once connected, your agent can call:
+
+| Tool | Purpose |
+|---|---|
+| `search_docs` | Semantic search over 5,000+ Salt 3007 module docs |
+| `get_doc` | Full doc chunk for a specific anchor URL |
+| `list_modules` | Enumerate available Salt modules by kind |
+| `live_fetch` | Fetch a live page from docs.saltproject.io (ETag-cached) |
+| `confirm_function_exists` | Verify a Salt function is actually loaded |
+| `list_minions` | List connected Salt proxy minions |
+| `get_grains` | Retrieve minion grains |
+| `get_pillar` | Retrieve redacted pillar data |
+| `validate_pillar` | Validate proxy pillar YAML against JSON schema |
+| `validate_state` | Lint SLS state structure |
+| `render_jinja` | Preview Jinja template output (sandboxed) |
+| `audit_cisco_config` | Security audit Cisco IOS/NX-OS config |
+| `generate_pillar` | Generate a known-good pillar template |
+| `state_show_sls` | Show compiled state object (dry-run) |
+| `state_test` | Preview changes in test mode |
+| `state_apply`* | Apply a state (requires `--allow-write`) |
+| `push_config`* | Push config snippet (requires `--allow-write`) |
+
+*Write tools are only registered when `allow_write: true` in config. Every write call requires a `confirm_token`.
+
+---
+
+## Agent integration docs
+
+- [Claude Code](docs/integrations/claude-code.md)
+- [Codex CLI](docs/integrations/codex.md)
+- [GitHub Copilot / VS Code](docs/integrations/copilot.md)
+- [Continue](docs/integrations/continue.md)
+- [Cursor](docs/integrations/cursor.md)
+
+---
 
 ## Development
 
 ```bash
+git clone https://github.com/Muminur/salt-mcp-server.git
+cd salt-mcp-server
 pip install -e ".[dev]"
-make test       # run tests
+make test       # run all tests + coverage
 make lint       # ruff check
 make typecheck  # mypy --strict
+make scan       # pip-audit --strict (dependency CVE scan)
 ```
+
+### Test coverage
+
+```
+659 tests passing | 89.5% line coverage | Python 3.10 / 3.11 / 3.12
+```
+
+---
+
+## Security
+
+- All subprocess calls use list argv with `shell=False` — no command injection
+- Bearer token comparison uses `hmac.compare_digest` — no timing oracle
+- Pillar data is always redacted before returning to agents
+- Threat model: [docs/security.md](docs/security.md)
+
+---
 
 ## Audit Log
 
-When write tools (`state_apply`, `push_config`) are enabled, every operation is recorded as a JSON line in `~/.salt-mcp/audit.jsonl` (configurable via `settings.paths.audit_log`). The log contains hashed tokens — never raw credentials.
+When write tools are enabled, every operation is recorded as a JSONL line in `~/.salt-mcp/audit.jsonl`. The log contains hashed tokens — never raw credentials. See [docs/runbook.md](docs/runbook.md) for rotation instructions.
 
-**Rotation:** Use `logrotate` or a cron job to archive the file. Example `/etc/logrotate.d/salt-mcp`:
-
-```
-~/.salt-mcp/audit.jsonl {
-    rotate 12
-    monthly
-    compress
-    missingok
-    notifempty
-}
-```
-
-The server appends to the existing file on startup. Safe to truncate or rotate at any time.
+---
 
 ## Observability
 
-Tool call metrics are written to `$telemetry.metrics_dir/metrics.prom` (default `/var/lib/salt-mcp/metrics.prom`) in Prometheus textfile format after each tool invocation. Metrics include:
+Tool call metrics are written to `$telemetry.metrics_dir/metrics.prom` in Prometheus textfile format after each tool invocation. Metrics:
 
 - `salt_mcp_tool_calls_total{tool="..."}` — cumulative call count per tool
-- `salt_mcp_tool_latency_ms_sum/count` — total and count for latency histogram
+- `salt_mcp_tool_latency_ms_sum/count` — latency histogram (sum + count)
 - `salt_mcp_doc_chunks_total` — index size on startup
 - `salt_mcp_live_fallback_calls_total` — live fetch invocations
 - `salt_mcp_validation_failures_total` — low-confidence search results
 
-Every tool call also emits a structured JSON log line via structlog with fields:
-`event, tool, duration_ms, tokens_returned, tokens_budget, source, low_confidence, client_session_id`.
+Every tool call also emits a structured JSON log line via structlog.
+
+---
 
 ## License
 
-Apache-2.0
+Apache-2.0 — see [LICENSE](LICENSE)

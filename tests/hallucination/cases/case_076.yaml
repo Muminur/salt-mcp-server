@@ -1,0 +1,9 @@
+id: case-076
+prompt: How do I run a raw command on a Cisco device via Salt napalm?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.cli
+must_not_hallucinate:
+- napalm.run_command
+- napalm.exec_command

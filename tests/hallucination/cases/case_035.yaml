@@ -1,0 +1,10 @@
+id: case-035
+prompt: How do I configure BGP route reflector cluster in Salt?
+expected_modules:
+- bgp
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- bgp.set_reflector
+- bgp.cluster_config

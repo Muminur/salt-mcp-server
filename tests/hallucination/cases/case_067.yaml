@@ -1,0 +1,9 @@
+id: case-067
+prompt: How do I set a custom grain value on a minion via Salt?
+expected_modules:
+- grains
+expected_functions:
+- grains.setval
+must_not_hallucinate:
+- grains.set_custom
+- grains.add_grain

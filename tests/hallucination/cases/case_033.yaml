@@ -1,0 +1,10 @@
+id: case-033
+prompt: How do I redistribute OSPF routes into BGP using Salt?
+expected_modules:
+- bgp
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- bgp.redistribute_ospf
+- routing.redistribute

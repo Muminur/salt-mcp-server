@@ -1,0 +1,9 @@
+id: case-060
+prompt: How do I configure committed access rate CAR on IOS via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- qos.configure_car
+- napalm.set_car

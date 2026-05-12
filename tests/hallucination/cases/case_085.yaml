@@ -1,0 +1,10 @@
+id: case-085
+prompt: How do I update napalm proxy driver configuration without restarting?
+expected_modules:
+- napalm
+- saltutil
+expected_functions:
+- saltutil.refresh_pillar
+must_not_hallucinate:
+- napalm.reload_config
+- proxy.hot_reload

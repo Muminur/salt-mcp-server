@@ -1,0 +1,11 @@
+id: case-069
+prompt: How do I store device credentials in pillar for napalm proxy via Salt?
+expected_modules:
+- pillar
+- napalm
+expected_functions:
+- pillar.items
+- pillar.get
+must_not_hallucinate:
+- pillar.store_creds
+- napalm.pillar_config

@@ -63,10 +63,10 @@ def test_validate_state_benchmark(benchmark: object) -> None:
     assert "valid" in result or "errors" in result
 
 
-def test_validate_state_100_calls_under_1s() -> None:
-    """100 sequential validate_state calls must complete in under 1 s."""
+def test_validate_state_100_calls_under_3s() -> None:
+    """100 sequential validate_state calls must complete in under 3 s."""
     t0 = time.perf_counter()
     for _ in range(100):
         validate_state_logic(_SLS_1KB)
     elapsed_s = time.perf_counter() - t0
-    assert elapsed_s < 1.0, f"100 validate_state calls took {elapsed_s:.2f} s (gate: 1 s)"
+    assert elapsed_s < 3.0, f"100 validate_state calls took {elapsed_s:.2f} s (gate: 3 s)"

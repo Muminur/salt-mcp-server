@@ -1,0 +1,9 @@
+id: case-051
+prompt: How do I create a named ACL on a Cisco IOS router via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- acl.create_named
+- napalm.acl_config

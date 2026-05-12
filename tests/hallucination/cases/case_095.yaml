@@ -1,0 +1,9 @@
+id: case-095
+prompt: How do I configure VRRP virtual IP addresses via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- vrrp.set_vip
+- napalm.vrrp_config

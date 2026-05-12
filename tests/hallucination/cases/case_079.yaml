@@ -1,0 +1,9 @@
+id: case-079
+prompt: How do I reload a Cisco device via Salt execution module?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.cli
+must_not_hallucinate:
+- napalm.reload_device
+- napalm.reboot

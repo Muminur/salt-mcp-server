@@ -1,0 +1,10 @@
+id: case-061
+prompt: How do I configure NTP authentication keys on a Cisco device via Salt?
+expected_modules:
+- ntp
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- ntp.set_auth_key
+- ntp.configure_authentication

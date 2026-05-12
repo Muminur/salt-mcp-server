@@ -1,0 +1,9 @@
+id: case-074
+prompt: How do I include another SLS file in a Salt state?
+expected_modules:
+- state
+expected_functions:
+- state.sls
+must_not_hallucinate:
+- state.include_sls
+- state.import_state

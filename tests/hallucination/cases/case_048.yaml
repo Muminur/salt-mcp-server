@@ -1,0 +1,9 @@
+id: case-048
+prompt: How do I enable LLDP on all interfaces via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- napalm.enable_lldp
+- lldp.configure

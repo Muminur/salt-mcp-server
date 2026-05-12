@@ -1,0 +1,9 @@
+id: case-091
+prompt: How do I configure port security on NX-OS access ports via Salt?
+expected_modules:
+- nxos
+expected_functions:
+- nxos.cmd
+must_not_hallucinate:
+- nxos.port_security
+- nxos.configure_security

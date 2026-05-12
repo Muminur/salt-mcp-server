@@ -1,0 +1,10 @@
+id: case-090
+prompt: How do I configure static routes with administrative distance via Salt?
+expected_modules:
+- napalm
+- route
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- route.add_static
+- napalm.static_route

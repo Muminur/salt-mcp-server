@@ -1,0 +1,9 @@
+id: case-065
+prompt: How do I enable AAA accounting for exec sessions via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- aaa.enable_accounting
+- napalm.aaa_config

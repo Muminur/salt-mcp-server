@@ -18,9 +18,15 @@ dependencies = [
     "anyio>=4",
     "structlog>=24",
     "pyyaml>=6",
+    "selectolax>=0.3",
+    "markdownify>=0.11",
+    "sqlite-vec>=0.1.6",
 ]
 
 [project.optional-dependencies]
+embeddings = [
+    "fastembed>=0.2",
+]
 dev = [
     "pytest>=8",
     "pytest-asyncio>=0.23",

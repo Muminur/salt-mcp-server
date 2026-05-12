@@ -59,6 +59,7 @@ class SaltMasterConfig(BaseModel):
     pillar_roots: list[str] = Field(default_factory=lambda: ["/etc/salt/pillar"])
     file_roots: list[str] = Field(default_factory=lambda: ["/srv/salt"])
     salt_call_path: str = "salt-call"
+    salt_key_path: str = "salt-key"
     command_timeout_s: int = 30
 
 

@@ -15,11 +15,18 @@ if TYPE_CHECKING:
     from salt_cisco_mcp.config import Settings
 
 
-def state_show_sls_logic(adapter: SaltCallAdapter | None, sls: str) -> dict[str, Any]:
+def state_show_sls_logic(
+    adapter: SaltCallAdapter | None,
+    sls: str,
+    target: str | None = None,
+) -> dict[str, Any]:
     """Return compiled state for *sls*, or error dict if adapter unavailable."""
     if adapter is None:
         return {"error": "salt-call not available", "sls": sls}
-    return show_sls(adapter, sls)
+    result = show_sls(adapter, sls)
+    if target:
+        result["target"] = target
+    return result
 
 
 def register(mcp: FastMCP[Any], settings: Settings) -> None:
@@ -28,8 +35,9 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
     @mcp.tool()
     async def state_show_sls(
         sls: str,
+        target: str | None = None,
         ctx: Context = ...,  # type: ignore[assignment,type-arg]
     ) -> dict[str, Any]:
         """Show the compiled Salt state for an SLS file without executing it."""
         app_state = ctx.request_context.lifespan_context
-        return state_show_sls_logic(app_state.adapter, sls)
+        return state_show_sls_logic(app_state.adapter, sls, target)

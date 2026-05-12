@@ -41,6 +41,7 @@ class ServerConfig(BaseModel):
     http_host: str = "127.0.0.1"
     http_port: int = 7842
     allow_write: bool = False
+    confirm_token: str = ""
 
 
 class PathsConfig(BaseModel):
@@ -49,6 +50,7 @@ class PathsConfig(BaseModel):
     doc_db: str = "/var/lib/salt-mcp/docs.db"
     recipes: str = "/usr/share/salt-mcp/recipes"
     log_file: str = "/var/log/salt-mcp/server.log"
+    audit_log: str = "~/.salt-mcp/audit.jsonl"
 
 
 class SaltMasterConfig(BaseModel):

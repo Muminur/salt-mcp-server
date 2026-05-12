@@ -2,8 +2,11 @@ import argparse
 import os
 import sys
 
+import anyio
+
 from salt_cisco_mcp import __version__
 from salt_cisco_mcp.config import Settings
+from salt_cisco_mcp.docs.scraper import scrape_docs
 from salt_cisco_mcp.logging_config import configure_logging
 from salt_cisco_mcp.verify import run_verify
 
@@ -66,7 +69,15 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(0)
 
     if args.command == "scrape":
-        print("scrape: not implemented yet (Milestone 2)", file=sys.stderr)
+        async def _run_scrape() -> None:
+            stats = await scrape_docs(settings, settings.paths.doc_db)
+            print(
+                f"scrape complete: {stats.pages_fetched} pages fetched, "
+                f"{stats.chunks_written} chunks indexed",
+                file=sys.stderr,
+            )
+
+        anyio.run(_run_scrape)
         sys.exit(0)
 
     if args.command == "verify":

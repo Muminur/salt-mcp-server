@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from salt_cisco_mcp.config import SecurityConfig, ServerConfig, Settings
+from salt_cisco_mcp.config import HttpAuthConfig, SecurityConfig, ServerConfig, Settings
 from salt_cisco_mcp.transports import (
     BearerTokenMiddleware,
     _read_bearer_token,
@@ -59,8 +59,10 @@ def test_read_bearer_token_returns_none_when_mode_is_not_bearer(
 
 def test_read_bearer_token_returns_none_when_file_missing(tmp_path: Path) -> None:
     settings = Settings(
-        security=SecurityConfig(  # type: ignore[arg-type]
-            http_auth={"mode": "bearer", "bearer_token_file": str(tmp_path / "missing.token")}
+        security=SecurityConfig(
+            http_auth=HttpAuthConfig(
+                mode="bearer", bearer_token_file=str(tmp_path / "missing.token")
+            )
         )
     )
     assert _read_bearer_token(settings) is None
@@ -70,8 +72,8 @@ def test_read_bearer_token_returns_token_from_file(tmp_path: Path) -> None:
     token_file = tmp_path / "bearer.token"
     token_file.write_text("my-secret-token\n")
     settings = Settings(
-        security=SecurityConfig(  # type: ignore[arg-type]
-            http_auth={"mode": "bearer", "bearer_token_file": str(token_file)}
+        security=SecurityConfig(
+            http_auth=HttpAuthConfig(mode="bearer", bearer_token_file=str(token_file))
         )
     )
     assert _read_bearer_token(settings) == "my-secret-token"
@@ -94,8 +96,8 @@ def test_build_http_app_with_bearer_wraps_middleware(tmp_path: Path) -> None:
 
     mcp = FastMCP(name="test")
     settings = Settings(
-        security=SecurityConfig(  # type: ignore[arg-type]
-            http_auth={"mode": "bearer", "bearer_token_file": str(token_file)}
+        security=SecurityConfig(
+            http_auth=HttpAuthConfig(mode="bearer", bearer_token_file=str(token_file))
         )
     )
     app = build_http_app(mcp, settings)

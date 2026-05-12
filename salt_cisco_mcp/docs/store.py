@@ -130,6 +130,43 @@ class DocStore:
         except sqlite3.OperationalError:
             return []
 
+    def get_chunk_by_anchor_url(self, anchor_url: str) -> dict[str, Any] | None:
+        """Look up a chunk by its full anchor URL (url + '#' + anchor fragment)."""
+        if "#" in anchor_url:
+            idx = anchor_url.rindex("#")
+            url, anchor = anchor_url[:idx], anchor_url[idx:]
+        else:
+            url, anchor = anchor_url, ""
+        cur = self._conn.cursor()
+        cur.execute("SELECT * FROM chunks WHERE url=? AND anchor=?", (url, anchor))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+    def list_module_urls(self, kind: str | None = None) -> list[dict[str, Any]]:
+        """Return distinct (url, kind) rows, optionally filtered by kind."""
+        cur = self._conn.cursor()
+        if kind is not None:
+            cur.execute(
+                "SELECT DISTINCT url, kind FROM chunks WHERE kind=? ORDER BY url",
+                (kind,),
+            )
+        else:
+            cur.execute("SELECT DISTINCT url, kind FROM chunks ORDER BY url")
+        return [dict(row) for row in cur.fetchall()]
+
+    def get_chunks_by_url(self, url: str) -> list[dict[str, Any]]:
+        """Return all chunks belonging to the given page URL."""
+        cur = self._conn.cursor()
+        cur.execute("SELECT * FROM chunks WHERE url=? ORDER BY id", (url,))
+        return [dict(row) for row in cur.fetchall()]
+
+    def get_chunk_by_heading(self, heading: str) -> dict[str, Any] | None:
+        """Return the first chunk whose heading exactly matches the given value."""
+        cur = self._conn.cursor()
+        cur.execute("SELECT * FROM chunks WHERE heading=? LIMIT 1", (heading,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
     def count_chunks(self) -> int:
         cur = self._conn.cursor()
         cur.execute("SELECT COUNT(*) FROM chunks")

@@ -4,14 +4,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+import httpx
 from mcp.server.fastmcp import Context
 
 from salt_cisco_mcp.docs.store import DocStore
+from salt_cisco_mcp.live.fallback import fetch as _fallback_fetch
 
 if TYPE_CHECKING:
     from mcp.server.fastmcp import FastMCP
 
     from salt_cisco_mcp.config import Settings
+
+_ALLOWED_DOMAINS: frozenset[str] = frozenset(["docs.saltproject.io"])
 
 
 def get_doc_logic(store: DocStore, anchor_url: str) -> dict[str, Any] | None:
@@ -42,6 +46,20 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
         """Fetch the full normalized doc chunk for a given anchor URL.
 
         Returns None if the anchor is not in the offline index.
+        Falls back to live fetch when network.live_fallback is enabled.
         """
         app_state = ctx.request_context.lifespan_context
-        return get_doc_logic(app_state.store, anchor_url)
+        result = get_doc_logic(app_state.store, anchor_url)
+        if result is not None:
+            return result
+        if not settings.network.live_fallback:
+            return None
+        async with httpx.AsyncClient(timeout=float(settings.network.request_timeout_s)) as client:
+            return await _fallback_fetch(
+                anchor_url,
+                network_enabled=True,
+                allowed_domains=_ALLOWED_DOMAINS,
+                cache_dir=settings.paths.live_cache,
+                ttl_s=settings.network.live_cache_ttl_s,
+                client=client,
+            )

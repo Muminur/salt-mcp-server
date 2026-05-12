@@ -107,6 +107,13 @@ class LoggingConfig(BaseModel):
     format: Literal["json", "console"] = "json"
 
 
+class TelemetryConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = True
+    metrics_dir: str = "/var/lib/salt-mcp"
+
+
 class _YamlConfigSource(PydanticBaseSettingsSource):
     def __init__(self, settings_cls: type[BaseSettings], yaml_path: str) -> None:
         super().__init__(settings_cls)
@@ -139,6 +146,7 @@ class Settings(BaseSettings):
     scrape: ScrapeConfig = Field(default_factory=ScrapeConfig)
     security: SecurityConfig = Field(default_factory=SecurityConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
+    telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
 
     @classmethod
     def settings_customise_sources(

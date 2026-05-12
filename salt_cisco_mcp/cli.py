@@ -70,6 +70,14 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(0)
 
     if args.command == "verify":
+        config_file = os.environ.get("SALT_MCP_CONFIG_FILE", "/etc/salt/mcp/config.yaml (default)")
+        print(f"config file : {config_file}")
+        print(f"transport   : {settings.server.transport}")
+        print(f"allow_write : {settings.server.allow_write}")
+        print(f"salt-call   : {settings.salt_master.salt_call_path}")
+        print(f"doc_db      : {settings.paths.doc_db}")
+        print(f"telemetry   : {'on' if settings.telemetry.enabled else 'off'}")
+        print()
         code = run_verify(
             salt_call_path=settings.salt_master.salt_call_path,
             doc_db_path=settings.paths.doc_db,

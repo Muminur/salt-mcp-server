@@ -19,6 +19,8 @@ def test_settings_defaults() -> None:
     assert "secret" in s.security.redact_keys
     assert s.logging.level == "INFO"
     assert s.logging.format == "json"
+    assert s.telemetry.enabled is True
+    assert s.telemetry.metrics_dir == "/var/lib/salt-mcp"
 
 
 def test_settings_env_override(monkeypatch: pytest.MonkeyPatch) -> None:

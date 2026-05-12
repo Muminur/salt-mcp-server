@@ -21,6 +21,8 @@ def test_ci_workflow_exists_and_valid() -> None:
     assert parsed is not None
     for needle in ("ubuntu-latest", "python-version", "ruff", "mypy", "pytest"):
         assert needle in content
+    jobs = parsed.get("jobs", {})
+    assert "integration" in jobs, "CI must have an integration test job"
 
 
 def test_license_exists() -> None:
@@ -64,3 +66,4 @@ def test_precommit_config_exists() -> None:
     content = pc.read_text()
     assert "ruff" in content
     assert "trailing-whitespace" in content
+    assert "mypy" in content

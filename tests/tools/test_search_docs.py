@@ -64,6 +64,7 @@ def test_search_docs_logic_result_items_have_citation_fields() -> None:
         "score",
         "doc_hash",
         "module",
+        "function",
     )
     for field in expected_fields:
         assert field in r, f"Citation field missing: {field}"

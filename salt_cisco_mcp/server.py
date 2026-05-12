@@ -90,4 +90,9 @@ def create_server(settings: Settings | None = None) -> FastMCP[AppState]:
     list_modules.register(mcp, settings)
     live_fetch.register(mcp, settings)
 
+    # Register resources
+    from salt_cisco_mcp.resources import salt_docs as salt_docs_resources
+
+    salt_docs_resources.register(mcp, settings)
+
     return mcp

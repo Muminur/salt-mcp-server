@@ -59,6 +59,7 @@ def search_docs_logic(
                 "score": r.score,
                 "doc_hash": r.doc_hash,
                 "module": module,
+                "function": r.heading,
             }
         )
 

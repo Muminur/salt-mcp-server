@@ -154,6 +154,19 @@ class DocStore:
             cur.execute("SELECT DISTINCT url, kind FROM chunks ORDER BY url")
         return [dict(row) for row in cur.fetchall()]
 
+    def get_chunks_by_url(self, url: str) -> list[dict[str, Any]]:
+        """Return all chunks belonging to the given page URL."""
+        cur = self._conn.cursor()
+        cur.execute("SELECT * FROM chunks WHERE url=? ORDER BY id", (url,))
+        return [dict(row) for row in cur.fetchall()]
+
+    def get_chunk_by_heading(self, heading: str) -> dict[str, Any] | None:
+        """Return the first chunk whose heading exactly matches the given value."""
+        cur = self._conn.cursor()
+        cur.execute("SELECT * FROM chunks WHERE heading=? LIMIT 1", (heading,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
     def count_chunks(self) -> int:
         cur = self._conn.cursor()
         cur.execute("SELECT COUNT(*) FROM chunks")

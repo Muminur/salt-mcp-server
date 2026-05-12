@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import shutil
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -27,6 +28,26 @@ def _make_lifespan(settings: Settings) -> Any:
 
     @asynccontextmanager
     async def _lifespan(app: FastMCP[None]) -> AsyncGenerator[None, None]:
+        # Verify salt-call is reachable
+        salt_call_found = shutil.which(settings.salt_master.salt_call_path)
+        if salt_call_found:
+            logger.info("salt-call verified", extra={"path": salt_call_found})
+        else:
+            logger.warning(
+                "salt-call not found on PATH",
+                extra={"configured": settings.salt_master.salt_call_path},
+            )
+
+        # Lazy-load embeddings availability check
+        if settings.retrieval.embeddings.enabled:
+            try:
+                import fastembed  # type: ignore[import-not-found]  # noqa: F401
+
+                logger.info("fastembed available; vector search enabled")
+            except ImportError:
+                logger.info("fastembed not installed; BM25-only search active")
+
+        # Open DocStore
         store = DocStore(settings.paths.doc_db)
         store.init_schema()
         logger.info("DocStore opened", extra={"db": settings.paths.doc_db})

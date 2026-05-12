@@ -1,0 +1,9 @@
+id: case-064
+prompt: How do I configure RADIUS server group for authentication via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- aaa.set_radius
+- napalm.configure_radius

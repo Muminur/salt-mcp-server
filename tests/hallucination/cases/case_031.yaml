@@ -1,0 +1,11 @@
+id: case-031
+prompt: How do I configure BGP neighbors on a Cisco router using Salt?
+expected_modules:
+- bgp
+- napalm
+expected_functions:
+- bgp.neighbors
+- napalm.load_config
+must_not_hallucinate:
+- bgp.add_neighbor
+- bgp.configure_peer

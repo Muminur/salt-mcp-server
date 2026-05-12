@@ -1,0 +1,10 @@
+id: case-045
+prompt: How do I configure an SVI interface for VLAN routing via Salt?
+expected_modules:
+- napalm
+- nxos
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- vlan.create_svi
+- nxos.svi_config

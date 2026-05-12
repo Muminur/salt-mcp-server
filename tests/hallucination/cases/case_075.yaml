@@ -1,0 +1,9 @@
+id: case-075
+prompt: How do I use Salt requisites to enforce state ordering?
+expected_modules:
+- state
+expected_functions:
+- state.apply
+must_not_hallucinate:
+- state.set_requisite
+- state.require_before

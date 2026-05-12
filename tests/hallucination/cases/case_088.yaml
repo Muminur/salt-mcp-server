@@ -1,0 +1,9 @@
+id: case-088
+prompt: How do I configure syslog server on IOS devices via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- syslog.set_server
+- napalm.logging_config

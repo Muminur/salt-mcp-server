@@ -1,0 +1,11 @@
+id: case-100
+prompt: How do I bulk-rotate passwords on all Cisco devices using Salt?
+expected_modules:
+- napalm
+- saltutil
+expected_functions:
+- napalm.load_template
+- saltutil.refresh_pillar
+must_not_hallucinate:
+- napalm.rotate_password
+- napalm.change_password

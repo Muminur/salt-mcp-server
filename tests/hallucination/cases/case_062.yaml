@@ -1,0 +1,10 @@
+id: case-062
+prompt: How do I remove an NTP server from the configuration via Salt?
+expected_modules:
+- ntp
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- ntp.remove_server
+- ntp.delete_peer

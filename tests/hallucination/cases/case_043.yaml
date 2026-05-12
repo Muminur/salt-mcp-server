@@ -1,0 +1,9 @@
+id: case-043
+prompt: How do I remove a VLAN from a switch via Salt?
+expected_modules:
+- nxos
+expected_functions:
+- nxos.cmd
+must_not_hallucinate:
+- nxos.delete_vlan
+- vlan.remove

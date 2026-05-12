@@ -1,0 +1,9 @@
+id: case-084
+prompt: How do I restart a crashed proxy minion process via Salt?
+expected_modules:
+- saltutil
+expected_functions:
+- saltutil.sync_all
+must_not_hallucinate:
+- proxy.restart
+- saltutil.restart_minion

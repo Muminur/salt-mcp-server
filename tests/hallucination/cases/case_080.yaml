@@ -1,0 +1,10 @@
+id: case-080
+prompt: How do I save running config to startup on a Cisco device via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.cli
+- napalm.load_config
+must_not_hallucinate:
+- napalm.save_config
+- napalm.write_mem

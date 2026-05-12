@@ -1,0 +1,10 @@
+id: case-083
+prompt: How do I list all connected proxy minions via Salt?
+expected_modules:
+- saltutil
+- key
+expected_functions:
+- key.list_all
+must_not_hallucinate:
+- saltutil.list_proxies
+- proxy.list_minions

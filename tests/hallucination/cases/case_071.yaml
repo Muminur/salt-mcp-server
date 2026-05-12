@@ -1,0 +1,10 @@
+id: case-071
+prompt: How do I apply a Salt state to all Cisco IOS proxies at once?
+expected_modules:
+- state
+expected_functions:
+- state.apply
+- state.sls
+must_not_hallucinate:
+- state.apply_all
+- state.run

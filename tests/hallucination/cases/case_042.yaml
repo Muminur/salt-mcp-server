@@ -1,0 +1,10 @@
+id: case-042
+prompt: How do I configure trunk ports for VLAN tagging via Salt?
+expected_modules:
+- napalm
+- vlan
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- vlan.set_trunk
+- vlan.configure_port

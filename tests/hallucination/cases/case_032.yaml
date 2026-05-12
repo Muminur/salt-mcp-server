@@ -1,0 +1,11 @@
+id: case-032
+prompt: How do I set BGP timers and keepalive intervals via Salt?
+expected_modules:
+- bgp
+- napalm
+expected_functions:
+- bgp.neighbors
+- napalm.load_template
+must_not_hallucinate:
+- bgp.set_timer
+- bgp.configure_timers

@@ -1,0 +1,10 @@
+id: case-073
+prompt: How do I create a Salt top.sls targeting Cisco NX-OS devices?
+expected_modules:
+- state
+expected_functions:
+- state.show_top
+- state.show_sls
+must_not_hallucinate:
+- state.build_top
+- state.configure_top

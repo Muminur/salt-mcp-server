@@ -1,0 +1,9 @@
+id: case-054
+prompt: How do I configure extended ACLs for traffic filtering via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- acl.configure_extended
+- napalm.set_acl

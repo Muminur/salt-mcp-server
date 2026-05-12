@@ -1,0 +1,10 @@
+id: case-039
+prompt: How do I configure OSPF authentication MD5 via Salt?
+expected_modules:
+- ospf
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- ospf.set_auth
+- ospf.configure_md5

@@ -1,0 +1,10 @@
+id: case-037
+prompt: How do I set OSPF area type to stub using Salt?
+expected_modules:
+- ospf
+- napalm
+expected_functions:
+- napalm.load_template
+must_not_hallucinate:
+- ospf.set_area
+- ospf.configure_stub

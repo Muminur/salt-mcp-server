@@ -1,0 +1,10 @@
+id: case-038
+prompt: How do I verify OSPF neighbor state on Cisco IOS via Salt?
+expected_modules:
+- ospf
+- napalm
+expected_functions:
+- napalm.cli
+must_not_hallucinate:
+- ospf.verify_neighbors
+- ospf.check_state

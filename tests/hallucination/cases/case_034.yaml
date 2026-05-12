@@ -1,0 +1,11 @@
+id: case-034
+prompt: How do I check BGP summary on IOS-XR via Salt?
+expected_modules:
+- bgp
+- napalm
+expected_functions:
+- napalm.cli
+- bgp.neighbors
+must_not_hallucinate:
+- bgp.show_summary
+- bgp.check_peers

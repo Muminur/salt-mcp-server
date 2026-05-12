@@ -1,0 +1,10 @@
+id: case-072
+prompt: How do I check which states are out of sync using Salt test mode?
+expected_modules:
+- state
+expected_functions:
+- state.sls
+- state.apply
+must_not_hallucinate:
+- state.check_sync
+- state.test_mode

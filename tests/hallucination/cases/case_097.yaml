@@ -1,0 +1,9 @@
+id: case-097
+prompt: How do I configure MPLS TE tunnels via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- mpls.te_tunnel
+- napalm.tunnel_config

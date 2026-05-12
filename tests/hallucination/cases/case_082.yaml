@@ -1,0 +1,11 @@
+id: case-082
+prompt: How do I check proxy minion connectivity via Salt?
+expected_modules:
+- napalm
+- test
+expected_functions:
+- test.ping
+- napalm.ping
+must_not_hallucinate:
+- proxy.check_connection
+- napalm.test_connection

@@ -1,0 +1,10 @@
+id: case-055
+prompt: How do I audit ACL configuration on all routers using Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.cli
+- napalm.get_config
+must_not_hallucinate:
+- acl.audit_all
+- napalm.check_acl

@@ -1,0 +1,11 @@
+id: case-044
+prompt: How do I verify VLAN membership on a port with Salt?
+expected_modules:
+- nxos
+- napalm
+expected_functions:
+- napalm.cli
+- nxos.cmd
+must_not_hallucinate:
+- vlan.verify
+- nxos.show_vlan

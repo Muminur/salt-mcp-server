@@ -1,0 +1,10 @@
+id: case-040
+prompt: How do I tune OSPF hello and dead intervals via Salt?
+expected_modules:
+- ospf
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- ospf.set_timers
+- ospf.configure_hello

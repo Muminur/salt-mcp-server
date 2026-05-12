@@ -1,0 +1,10 @@
+id: case-066
+prompt: How do I retrieve grains for all Cisco IOS minions via Salt?
+expected_modules:
+- grains
+expected_functions:
+- grains.items
+- grains.get
+must_not_hallucinate:
+- grains.fetch_all
+- grains.retrieve

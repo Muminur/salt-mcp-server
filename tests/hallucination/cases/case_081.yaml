@@ -1,0 +1,10 @@
+id: case-081
+prompt: How do I configure a napalm proxy minion for an IOS-XR device?
+expected_modules:
+- napalm
+- proxy
+expected_functions:
+- napalm.ping
+must_not_hallucinate:
+- proxy.configure_napalm
+- napalm.proxy_setup

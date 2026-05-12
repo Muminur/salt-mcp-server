@@ -1,0 +1,9 @@
+id: case-099
+prompt: How do I configure SSH public key authentication on IOS devices via Salt?
+expected_modules:
+- napalm
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- ssh.configure_key
+- napalm.ssh_key

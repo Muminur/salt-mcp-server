@@ -1,0 +1,10 @@
+id: case-093
+prompt: How do I enable Rapid PVST on all switches via Salt?
+expected_modules:
+- napalm
+- nxos
+expected_functions:
+- napalm.load_config
+must_not_hallucinate:
+- stp.rapid_pvst
+- nxos.stp_mode

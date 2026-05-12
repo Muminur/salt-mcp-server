@@ -1,0 +1,9 @@
+id: case-070
+prompt: How do I refresh pillar data on a running minion via Salt?
+expected_modules:
+- saltutil
+expected_functions:
+- saltutil.refresh_pillar
+must_not_hallucinate:
+- pillar.refresh
+- saltutil.reload_pillar

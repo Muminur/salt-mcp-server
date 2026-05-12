@@ -127,6 +127,21 @@ def create_server(settings: Settings | None = None) -> FastMCP[AppState]:
     list_loaded_functions.register(mcp, settings)
     confirm_function_exists.register(mcp, settings)
 
+    # Register validation tools
+    from salt_cisco_mcp.tools import (
+        audit_cisco_config,
+        generate_pillar,
+        render_jinja,
+        validate_pillar,
+        validate_state,
+    )
+
+    validate_pillar.register(mcp, settings)
+    validate_state.register(mcp, settings)
+    render_jinja.register(mcp, settings)
+    audit_cisco_config.register(mcp, settings)
+    generate_pillar.register(mcp, settings)
+
     # Register docs resources
     from salt_cisco_mcp.resources import salt_docs as salt_docs_resources
 

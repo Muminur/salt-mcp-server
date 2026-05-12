@@ -28,6 +28,7 @@ dev = [
     "mypy>=1.10",
     "hatch>=1.12",
     "pytest-cov>=5",
+    "pyyaml>=6",
 ]
 
 [project.scripts]
@@ -53,3 +54,4 @@ python_version = "3.10"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+addopts = "--cov=salt_cisco_mcp --cov-fail-under=85"

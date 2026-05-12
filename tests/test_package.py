@@ -17,6 +17,11 @@ def test_cli_main_callable() -> None:
     assert callable(main)
 
 
+def test_cli_main_runs_without_error() -> None:
+    from salt_cisco_mcp.cli import main
+    main()
+
+
 def test_installed_metadata_version_matches_module() -> None:
     import salt_cisco_mcp
     assert importlib.metadata.version("salt-cisco-mcp") == salt_cisco_mcp.__version__

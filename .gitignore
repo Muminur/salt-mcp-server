@@ -6,6 +6,7 @@ __pycache__/
 htmlcov/
 .pytest_cache/
 .omc/
+.serena/
 .env
 .env.local
 *.log
@@ -14,3 +15,9 @@ build/
 *.egg-info/
 .mypy_cache/
 .ruff_cache/
+
+# Project management docs — kept local, not pushed to GitHub
+CLAUDE.md
+PLANNING.md
+TASKS.md
+PRD-salt-cisco-mcp.md

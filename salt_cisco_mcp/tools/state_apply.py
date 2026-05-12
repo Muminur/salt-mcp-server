@@ -26,6 +26,7 @@ def state_apply_logic(
     confirm_token: str,
     expected_token: str,
     audit_log_path: str,
+    client_id: str = "",
 ) -> dict[str, Any]:
     """Apply *sls* to *target*, verifying *confirm_token* before executing."""
     if adapter is None:
@@ -42,6 +43,7 @@ def state_apply_logic(
         token_hash=hash_str(confirm_token),
         sls_hash=hash_str(sls),
         result=result.get("success"),
+        client_id=client_id,
     )
     return result
 
@@ -65,4 +67,5 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
             confirm_token=confirm_token,
             expected_token=settings.server.confirm_token,
             audit_log_path=settings.paths.audit_log,
+            client_id=ctx.client_id or "",
         )

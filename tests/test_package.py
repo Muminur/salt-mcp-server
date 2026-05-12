@@ -19,7 +19,7 @@ def test_cli_main_callable() -> None:
 
 def test_cli_main_runs_without_error() -> None:
     from salt_cisco_mcp.cli import main
-    main()
+    main(argv=[])
 
 
 def test_installed_metadata_version_matches_module() -> None:

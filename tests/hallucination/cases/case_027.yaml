@@ -1,0 +1,12 @@
+id: case-027
+prompt: "How do I set an interface description on Cisco IOS with Salt?"
+expected_modules:
+  - interface
+  - napalm
+expected_functions:
+  - interface.set_description
+  - interface.details
+  - napalm.load_template
+must_not_hallucinate:
+  - interface.configure_description
+  - ios.set_interface_desc

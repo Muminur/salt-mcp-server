@@ -1,0 +1,12 @@
+id: case-019
+prompt: "How do I use Salt to configure VLANs on a Cisco NX-OS switch?"
+expected_modules:
+  - vlan
+  - napalm
+expected_functions:
+  - vlan.present
+  - vlan.list
+  - napalm.load_template
+must_not_hallucinate:
+  - vlan.configure
+  - vlan.set_name

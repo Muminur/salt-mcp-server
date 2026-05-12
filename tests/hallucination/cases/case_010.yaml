@@ -1,0 +1,9 @@
+id: case-010
+prompt: "How do I view LLDP neighbors on a device managed by NAPALM proxy?"
+expected_modules:
+  - napalm
+expected_functions:
+  - napalm.lldp_neighbors
+must_not_hallucinate:
+  - napalm.cdp_neighbors
+  - napalm.lldp_info

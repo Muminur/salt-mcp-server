@@ -1,0 +1,11 @@
+id: case-003
+prompt: "Write a Salt state that applies an ACL to a Cisco IOS interface."
+expected_modules:
+  - acl
+  - napalm
+expected_functions:
+  - acl.config
+  - napalm.load_template
+must_not_hallucinate:
+  - acl.apply_interface
+  - ios.acl_bind

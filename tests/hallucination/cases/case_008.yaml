@@ -1,0 +1,10 @@
+id: case-008
+prompt: "How do I apply a Salt highstate to all network devices in a group?"
+expected_modules:
+  - state
+expected_functions:
+  - state.highstate
+  - state.apply
+must_not_hallucinate:
+  - state.run_all
+  - state.execute

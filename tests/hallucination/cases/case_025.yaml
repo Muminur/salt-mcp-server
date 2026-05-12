@@ -1,0 +1,10 @@
+id: case-025
+prompt: "How do I retrieve optics information from Cisco devices with NAPALM?"
+expected_modules:
+  - napalm
+expected_functions:
+  - napalm.optics
+  - napalm.interfaces
+must_not_hallucinate:
+  - napalm.get_optics
+  - napalm.optical_stats

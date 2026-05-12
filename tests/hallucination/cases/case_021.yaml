@@ -1,0 +1,12 @@
+id: case-021
+prompt: "How do I use Salt mine to collect interface stats from all Cisco devices?"
+expected_modules:
+  - mine
+  - napalm
+expected_functions:
+  - mine.send
+  - mine.get
+  - napalm.interfaces
+must_not_hallucinate:
+  - mine.collect_stats
+  - mine.interface_data

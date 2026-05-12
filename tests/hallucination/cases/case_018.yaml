@@ -1,0 +1,11 @@
+id: case-018
+prompt: "How do I set up TACACS authentication in Salt pillar for proxy minions?"
+expected_modules:
+  - pillar
+  - tacacs
+expected_functions:
+  - pillar.items
+  - tacacs.config
+must_not_hallucinate:
+  - tacacs.configure_aaa
+  - proxy.set_tacacs

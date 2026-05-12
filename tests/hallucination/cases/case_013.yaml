@@ -1,0 +1,11 @@
+id: case-013
+prompt: "How do I configure syslog on Cisco IOS-XR with Salt NAPALM proxy?"
+expected_modules:
+  - syslog
+  - napalm
+expected_functions:
+  - syslog.config
+  - napalm.load_template
+must_not_hallucinate:
+  - syslog.configure_server
+  - ios_xr.syslog_setup

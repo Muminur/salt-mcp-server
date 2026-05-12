@@ -1,0 +1,10 @@
+id: case-023
+prompt: "How do I use Salt event system to trigger config changes on network events?"
+expected_modules:
+  - event
+expected_functions:
+  - event.send
+  - event.fire
+must_not_hallucinate:
+  - event.trigger_config
+  - event.network_hook

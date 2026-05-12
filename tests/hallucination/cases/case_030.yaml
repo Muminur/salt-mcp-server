@@ -1,0 +1,15 @@
+id: case-030
+prompt: "How do I use Salt to configure BGP on a Cisco IOS-XR router with full validation?"
+expected_modules:
+  - bgp
+  - napalm
+  - state
+expected_functions:
+  - bgp.config
+  - napalm.bgp_config
+  - napalm.load_template
+  - state.show_sls
+must_not_hallucinate:
+  - bgp.configure_peer
+  - ios_xr.bgp_setup
+  - napalm.configure_bgp

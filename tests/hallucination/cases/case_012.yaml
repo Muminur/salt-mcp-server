@@ -1,0 +1,10 @@
+id: case-012
+prompt: "How do I rollback a configuration change on a NAPALM-managed Cisco device?"
+expected_modules:
+  - napalm
+expected_functions:
+  - napalm.rollback
+  - napalm.config_changed
+must_not_hallucinate:
+  - napalm.revert_config
+  - napalm.undo_changes

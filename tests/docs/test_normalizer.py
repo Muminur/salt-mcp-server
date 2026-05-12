@@ -16,8 +16,7 @@ def test_normalize_preserves_code_blocks() -> None:
 
 def test_normalize_extracts_title() -> None:
     html = (
-        "<html><head><title>Config Module</title></head>"
-        "<body><h1>Config Module</h1></body></html>"
+        "<html><head><title>Config Module</title></head><body><h1>Config Module</h1></body></html>"
     )
     _, meta = normalize_page(html, url="https://docs.saltproject.io/en/3007/topics/foo.html")
     assert meta.title != ""

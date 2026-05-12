@@ -1,4 +1,5 @@
 """Async crawler for docs.saltproject.io/en/3007."""
+
 from __future__ import annotations
 
 import asyncio
@@ -36,6 +37,7 @@ class CrawlStats:
 @dataclass
 class _ETagCache:
     """In-memory ETag → body cache to avoid re-downloading unchanged pages."""
+
     _store: dict[str, tuple[str, bytes]] = field(default_factory=dict)
 
     def get_etag(self, url: str) -> str | None:
@@ -63,6 +65,7 @@ def _is_doc_page(url: str) -> bool:
 def _extract_links(html: str, base_url: str) -> list[str]:
     """Extract href links from HTML and resolve them against base_url."""
     import re
+
     hrefs = re.findall(r'href=["\']([^"\'#][^"\']*)["\']', html)
     links: list[str] = []
     for href in hrefs:

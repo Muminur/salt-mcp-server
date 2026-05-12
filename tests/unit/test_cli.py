@@ -62,7 +62,8 @@ def test_cli_verify_prints_config_summary(capsys: pytest.CaptureFixture[str]) ->
     assert "config file" in out
 
 
-def test_cli_serve_stub_exits_zero() -> None:
-    with pytest.raises(SystemExit) as exc:
+def test_cli_serve_invokes_run_server() -> None:
+    """serve subcommand delegates to transports.run_server."""
+    with patch("salt_cisco_mcp.transports.run_server") as mock_run:
         main(argv=["serve"])
-    assert exc.value.code == 0
+    mock_run.assert_called_once()

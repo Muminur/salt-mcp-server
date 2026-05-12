@@ -28,15 +28,17 @@ def bm25_search(store: DocStore, query: str, limit: int = 10) -> list[SearchResu
 
     results: list[SearchResult] = []
     for row in rows:
-        results.append(SearchResult(
-            chunk_id=int(row.get("id", 0)),
-            text=str(row.get("text", "")),
-            anchor=str(row.get("anchor", "")),
-            heading=str(row.get("heading", "")),
-            kind=str(row.get("kind", "")),
-            score=-float(row.get("rank", 0.0)),
-            doc_hash=str(row.get("doc_hash", "")),
-        ))
+        results.append(
+            SearchResult(
+                chunk_id=int(row.get("id", 0)),
+                text=str(row.get("text", "")),
+                anchor=str(row.get("anchor", "")),
+                heading=str(row.get("heading", "")),
+                kind=str(row.get("kind", "")),
+                score=-float(row.get("rank", 0.0)),
+                doc_hash=str(row.get("doc_hash", "")),
+            )
+        )
     return results
 
 

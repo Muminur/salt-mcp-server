@@ -64,16 +64,31 @@ class DocStore:
             cur.execute(
                 "UPDATE chunks SET heading=?, kind=?, salt_version=?, text=?, "
                 "token_count=?, doc_hash=? WHERE id=?",
-                (chunk.heading, chunk.kind, meta.salt_version, chunk.text,
-                 chunk.token_count, doc_hash, old_id),
+                (
+                    chunk.heading,
+                    chunk.kind,
+                    meta.salt_version,
+                    chunk.text,
+                    chunk.token_count,
+                    doc_hash,
+                    old_id,
+                ),
             )
             row_id = old_id
         else:
             cols = "(url, anchor, heading, kind, salt_version, text, token_count, doc_hash)"
             cur.execute(
                 f"INSERT INTO chunks{cols} VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
-                (meta.url, chunk.anchor, chunk.heading, chunk.kind, meta.salt_version,
-                 chunk.text, chunk.token_count, doc_hash),
+                (
+                    meta.url,
+                    chunk.anchor,
+                    chunk.heading,
+                    chunk.kind,
+                    meta.salt_version,
+                    chunk.text,
+                    chunk.token_count,
+                    doc_hash,
+                ),
             )
             row_id = cur.lastrowid if cur.lastrowid is not None else 0
 

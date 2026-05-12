@@ -37,9 +37,7 @@ def test_settings_yaml_file_load(
     tmp_path: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     config_file = tmp_path / "config.yaml"  # type: ignore[operator]
-    config_file.write_text(
-        "server:\n  transport: http\n  http_port: 9999\n"
-    )
+    config_file.write_text("server:\n  transport: http\n  http_port: 9999\n")
     monkeypatch.setenv("SALT_MCP_CONFIG_FILE", str(config_file))
     s = Settings()
     assert s.server.transport == "http"

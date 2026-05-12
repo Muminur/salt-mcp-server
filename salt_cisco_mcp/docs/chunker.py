@@ -140,13 +140,15 @@ def chunk_page(markdown: str, meta: PageMeta, max_tokens: int = 512) -> list[Chu
             else:
                 anchor = meta.anchor + "-" + str(chunk_index)
 
-            chunks.append(Chunk(
-                text=sub.strip(),
-                heading=heading,
-                anchor=anchor,
-                token_count=_token_count(sub),
-                kind=meta.kind,
-            ))
+            chunks.append(
+                Chunk(
+                    text=sub.strip(),
+                    heading=heading,
+                    anchor=anchor,
+                    token_count=_token_count(sub),
+                    kind=meta.kind,
+                )
+            )
             chunk_index += 1
 
     return chunks

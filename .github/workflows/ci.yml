@@ -66,6 +66,7 @@ jobs:
       - name: Run performance benchmarks and gates
         run: |
           pytest tests/performance/ -v -p no:cov \
+            --override-ini="addopts=" \
             --benchmark-json=benchmark-result.json \
             --benchmark-min-rounds=5
       - name: Upload benchmark results

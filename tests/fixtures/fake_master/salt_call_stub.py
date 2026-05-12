@@ -56,6 +56,27 @@ _SYS_FUNCTIONS = [
     "test.ping",
 ]
 
+_STATE_SHOW_SLS = {
+    "deny_ssh_acl_|-deny-ssh-from-rfc1918_|-deny-ssh-from-rfc1918_|-managed": {
+        "__id__": "deny-ssh-from-rfc1918",
+        "__sls__": "cisco.acl.edge",
+        "__run_num__": 0,
+        "name": "deny-ssh-from-rfc1918",
+        "state": "acl",
+        "fun": "managed",
+    }
+}
+
+_STATE_SLS_TEST = {
+    "deny_ssh_acl_|-deny-ssh-from-rfc1918_|-deny-ssh-from-rfc1918_|-managed": {
+        "name": "deny-ssh-from-rfc1918",
+        "comment": "State would have been applied",
+        "changes": {"new": "ACL entry deny SSH from 10.0.0.0/8 added"},
+        "result": True,
+        "duration": 12.5,
+    }
+}
+
 _ARGSPEC = {
     "ntp.set_servers": {
         "func": "ntp.set_servers",
@@ -124,5 +145,9 @@ elif func == "sys.argspec":
     print(json.dumps({"local": _ARGSPEC.get(name, {})}))
 elif func == "test.ping":
     print(json.dumps({"local": True}))
+elif func == "state.show_sls":
+    print(json.dumps({"local": _STATE_SHOW_SLS}))
+elif func == "state.sls":
+    print(json.dumps({"local": _STATE_SLS_TEST}))
 else:
     print(json.dumps({"local": None}))

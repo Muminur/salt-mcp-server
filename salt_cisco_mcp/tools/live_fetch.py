@@ -55,6 +55,8 @@ async def live_fetch_logic(
 def register(mcp: FastMCP[Any], settings: Settings) -> None:
     """Register the live_fetch tool on the FastMCP instance (network-gated)."""
 
+    _MAX_CONTENT_CHARS = 16_000  # ~4K tokens; prevents 50KB+ raw HTML responses
+
     @mcp.tool()
     async def live_fetch(
         url: str,
@@ -64,6 +66,7 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
 
         Only available when network.live_fallback is enabled in config.
         Domain is restricted to docs.saltproject.io.
+        Content is capped at ~4K tokens to avoid oversized responses.
         """
         t0 = time.perf_counter()
         app_state = ctx.request_context.lifespan_context
@@ -73,6 +76,9 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
             cache_dir=settings.paths.live_cache,
             ttl_s=settings.network.live_cache_ttl_s,
         )
+        content = result.get("content", "")
+        if len(content) > _MAX_CONTENT_CHARS:
+            result = {**result, "content": content[:_MAX_CONTENT_CHARS], "truncated": True}
         duration_ms = (time.perf_counter() - t0) * 1000
         content_len = len(result.get("content", ""))
         log_tool_call(

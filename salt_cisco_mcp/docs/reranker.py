@@ -25,7 +25,7 @@ class Reranker:
             return self._inner is not None
         self._checked = True
         try:
-            import fastembed  # type: ignore[import-not-found]
+            import fastembed
 
             self._inner = fastembed.FlagEmbedding(model_name=self.model)
             return True

@@ -52,7 +52,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -e ".[dev]"
-      - run: pytest tests/integration/ -vv -p no:cov
+      - run: pytest tests/integration/ -vv -p no:cov --override-ini="addopts="
 
   performance:
     name: Performance gates

@@ -77,7 +77,7 @@ def _make_lifespan(settings: Settings) -> Any:
         # Lazy-load embeddings availability check
         if settings.retrieval.embeddings.enabled:
             try:
-                import fastembed  # type: ignore[import-not-found]  # noqa: F401
+                import fastembed  # noqa: F401
 
                 logger.info("fastembed available; vector search enabled")
             except ImportError:

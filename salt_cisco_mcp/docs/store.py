@@ -182,7 +182,7 @@ class DocStore:
 
     def load_vec_extension(self) -> None:
         """Load the sqlite-vec extension into this connection."""
-        import sqlite_vec  # type: ignore[import-untyped]
+        import sqlite_vec
 
         self._conn.enable_load_extension(True)
         sqlite_vec.load(self._conn)

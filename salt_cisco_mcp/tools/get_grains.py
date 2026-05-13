@@ -13,18 +13,28 @@ if TYPE_CHECKING:
 
     from salt_cisco_mcp.config import Settings
 
+_MAX_GRAINS_KEYS = 50
+
 
 def get_grains_logic(
     adapter: SaltCallAdapter,
     minion_id: str | None = None,
     keys: list[str] | None = None,
+    max_keys: int = _MAX_GRAINS_KEYS,
 ) -> dict[str, Any]:
     """Return grains dict from salt-call, optionally filtered by key names."""
     raw = adapter.call("grains.items")
     grains: dict[str, Any] = dict(raw.get("local") or {})
     if keys:
         grains = {k: v for k, v in grains.items() if k in keys}
+    total = len(grains)
+    truncated = total > max_keys
+    if truncated:
+        grains = dict(list(grains.items())[:max_keys])
     result: dict[str, Any] = {"grains": grains}
+    if truncated:
+        result["total"] = total
+        result["truncated"] = True
     if minion_id is not None:
         result["minion_id"] = minion_id
     else:

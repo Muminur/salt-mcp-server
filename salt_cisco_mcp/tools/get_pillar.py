@@ -14,17 +14,24 @@ if TYPE_CHECKING:
 
     from salt_cisco_mcp.config import Settings
 
+_MAX_PILLAR_KEYS = 50
+
 
 def get_pillar_logic(
     adapter: SaltCallAdapter,
     minion_id: str | None = None,
+    max_keys: int = _MAX_PILLAR_KEYS,
 ) -> dict[str, Any]:
     """Return always-redacted pillar from salt-call --local pillar.items."""
     pillar = read_pillar(adapter)
-    result: dict[str, Any] = {
-        "pillar": pillar,
-        "redacted": True,
-    }
+    total = len(pillar)
+    truncated = total > max_keys
+    if truncated:
+        pillar = dict(list(pillar.items())[:max_keys])
+    result: dict[str, Any] = {"pillar": pillar, "redacted": True}
+    if truncated:
+        result["total_keys"] = total
+        result["truncated"] = True
     if minion_id is not None:
         result["minion_id"] = minion_id
     return result

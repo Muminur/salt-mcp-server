@@ -19,21 +19,10 @@ def draft_state_for_cisco_logic(task: str, vendor: str) -> str:
     }.get(vendor.lower(), f"{vendor} (verify proxy driver before applying)")
 
     return (
-        f"You are a Salt 3007 expert. Draft a Salt SLS state to accomplish the following task "
-        f"on a Cisco {vendor_note} device:\n\n"
-        f"Task: {task}\n\n"
-        "Guidelines:\n"
-        "1. Always call `search_docs` first to find the correct Salt module and function.\n"
-        "2. Call `confirm_function_exists` to verify the function name before using it.\n"
-        "3. Use `validate_state` to lint the SLS before presenting it.\n"
-        "4. Use `state_test` to dry-run the state and confirm expected changes.\n"
-        "5. Every state ID should be descriptive and unique.\n"
-        "6. Include the Salt docs citation: module, function, anchor_url, doc_hash.\n"
-        f"7. Target vendor: {vendor_note}.\n\n"
-        "Output format:\n"
-        "- SLS content in a fenced ```yaml block\n"
-        "- Citation block: {module, function, anchor_url}\n"
-        "- Brief explanation of what each state block does\n"
+        f"Draft a Salt 3007 SLS state for: {task}\n"
+        f"Target: Cisco {vendor_note}\n\n"
+        "Steps: search_docs → confirm_function_exists → validate_state → state_test\n\n"
+        "Output: fenced ```yaml SLS + citation {{module, function, anchor_url, doc_hash}}\n"
     )
 
 

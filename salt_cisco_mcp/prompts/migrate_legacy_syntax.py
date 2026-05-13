@@ -13,26 +13,12 @@ if TYPE_CHECKING:
 def migrate_legacy_syntax_logic(sls_content: str) -> str:
     """Return a migration prompt for converting legacy SLS to Salt 3007 syntax."""
     return (
-        "You are a Salt 3007 migration expert. Migrate the following Salt SLS from "
-        "legacy syntax (pre-3000) to Salt 3007 compatible syntax.\n\n"
-        "Legacy SLS to migrate:\n"
-        f"```yaml\n{sls_content}\n```\n\n"
-        "Migration guidelines for Salt 3007:\n"
-        "1. Replace `cmd.run` with explicit module functions where possible.\n"
-        "2. Replace deprecated `pkgrepo.managed` `humanname` with `name`.\n"
-        "3. Replace `service.running`/`service.dead` with `service.running(enable=True)`.\n"
-        "4. Remove `- require_in:` in favour of `- require:` on the dependent state.\n"
-        "5. Replace `file.managed source: salt://` with explicit `source:` list syntax.\n"
-        "6. For NAPALM/Cisco states: verify all proxy module functions against Salt 3007 docs.\n"
-        "7. Replace `netacl` module calls with current `salt.states.netacl` API.\n\n"
-        "After migrating:\n"
-        "- Call `validate_state` on the migrated SLS.\n"
-        "- Call `confirm_function_exists` for every function name used.\n"
-        "- Call `search_docs` to verify any changed syntax against Salt 3007 docs.\n\n"
-        "Output format:\n"
-        "- Migrated SLS in a fenced ```yaml block\n"
-        "- Summary of changes made (bulleted list)\n"
-        "- Salt 3007 docs citations for changed syntax\n"
+        f"Migrate to Salt 3007 syntax:\n```yaml\n{sls_content}\n```\n\n"
+        "Key changes: cmd.run→module functions, pkgrepo humanname→name, "
+        "service.running(enable=True), require_in→require, file.managed source: list, "
+        "netacl→salt.states.netacl API.\n\n"
+        "After: validate_state → confirm_function_exists → search_docs\n\n"
+        "Output: migrated ```yaml + change summary + citations\n"
     )
 
 

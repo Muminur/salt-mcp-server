@@ -13,24 +13,12 @@ if TYPE_CHECKING:
 def generate_proxy_pillar_logic(proxytype: str, host: str) -> str:
     """Return a guidance prompt for generating a Salt proxy pillar."""
     return (
-        f"You are a Salt 3007 expert. Help generate a proxy pillar for a {proxytype} "
-        f"proxy minion connecting to host {host}.\n\n"
-        "Steps:\n"
-        f"1. Call `generate_pillar(proxytype='{proxytype}', host='{host}', username='<username>')` "
-        "   to get the known-good template.\n"
-        "2. The template uses `<<password>>` as a placeholder — NEVER fill in real passwords "
-        "   in SLS or pillar files. Use Salt's `gpg` renderer or Vault integration for secrets.\n"
-        "3. Call `validate_pillar` on the generated YAML to confirm it passes schema validation.\n"
-        "4. Place the pillar file at `pillar/<minion_id>/init.sls` and reference it "
-        "in `top.sls`.\n\n"
-        f"Proxy type notes for {proxytype}:\n"
-        + _proxytype_notes(proxytype)
-        + "\n\n"
-        "Security reminders:\n"
-        "- Never commit passwords to version control.\n"
-        "- Use Salt's `gpg` renderer (set the field to `|GPGDATA ...` ciphertext).\n"
-        "- Rotate credentials after first successful proxy connection test.\n"
-        "- Run `salt-proxy --proxyid=<id> -l debug` to verify connectivity.\n"
+        f"Generate proxy pillar for {proxytype} minion at {host}.\n\n"
+        f"Steps: generate_pillar(proxytype='{proxytype}', host='{host}', username='<username>') "
+        f"→ validate_pillar → place at pillar/<minion_id>/init.sls\n\n"
+        f"{proxytype} notes: {_proxytype_notes(proxytype)}\n\n"
+        "Security: never commit passwords — use gpg renderer or Vault. "
+        "Verify: salt-proxy --proxyid=<id> -l debug\n"
     )
 
 

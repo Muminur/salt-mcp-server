@@ -50,7 +50,7 @@ Once connected, your agent can call:
 
 | Tool | Purpose |
 |---|---|
-| `search_docs` | Semantic search over 5,000+ Salt 3007 module docs |
+| `search_docs` | Hybrid BM25 + vector search over 5,000+ Salt 3007 module docs |
 | `get_doc` | Full doc chunk for a specific anchor URL |
 | `list_modules` | Enumerate available Salt modules by kind |
 | `live_fetch` | Fetch a live page from docs.saltproject.io (ETag-cached) |
@@ -69,6 +69,33 @@ Once connected, your agent can call:
 | `push_config`* | Push config snippet (requires `--allow-write`) |
 
 *Write tools are only registered when `allow_write: true` in config. Every write call requires a `confirm_token`.
+
+---
+
+## Vector search (optional)
+
+By default `search_docs` uses BM25 full-text search. Install the optional embedding backend for hybrid BM25 + vector search with Reciprocal Rank Fusion:
+
+```bash
+pip install "salt-cisco-mcp[embeddings]"   # installs fastembed (ONNX, ~200 MB model download on first use)
+```
+
+To keep BM25-only mode and skip the model download:
+
+```bash
+salt-cisco-mcp serve --no-embeddings
+```
+
+An optional reranker (BAAI/bge-reranker-base) can be enabled in `config.yaml`:
+
+```yaml
+retrieval:
+  reranker:
+    enabled: true
+    model: "BAAI/bge-reranker-base"
+```
+
+All three modes (BM25-only, hybrid, hybrid + reranker) work on Windows, macOS, and Linux.
 
 ---
 
@@ -97,7 +124,7 @@ make scan       # pip-audit --strict (dependency CVE scan)
 ### Test coverage
 
 ```
-659 tests passing | 89.5% line coverage | Python 3.10 / 3.11 / 3.12
+706 tests passing | 89.8% line coverage | Python 3.10 / 3.11 / 3.12
 ```
 
 ---

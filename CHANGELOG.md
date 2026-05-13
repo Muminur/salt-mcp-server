@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] — 2026-05-13
+
+### Added
+
+**Milestone 16 — Vector Search & Reranker**
+- `salt_cisco_mcp/docs/embedder.py`: fastembed ONNX embedding wrapper with graceful BM25-only fallback when fastembed is not installed
+- `salt_cisco_mcp/docs/reranker.py`: optional bge-reranker-base wrapper; falls through to original ranking when fastembed is absent
+- `salt_cisco_mcp/docs/store.py`: sqlite-vec extension support — `load_vec_extension()`, `init_vec_schema(dim)`, `upsert_embedding()`, `vec_search()` for nearest-neighbour lookup
+- `salt_cisco_mcp/docs/retriever.py`: `hybrid_search()` combining BM25 + vector results via Reciprocal Rank Fusion; falls back to BM25 automatically when embedder unavailable
+- `salt_cisco_mcp/config.py`: `RerankerConfig` model; `RetrievalConfig.reranker` field (disabled by default)
+- CLI `--no-embeddings` flag for `serve` — forces BM25-only mode, skips model download
+- `tests/docs/golden_queries.yaml`: 10 declarative BM25 retrieval quality cases
+- `tests/docs/test_golden_queries.py`: parametrised golden-query regression tests
+- `jinja2>=3` added to core dependencies (required by `validate/jinja_preview.py`)
+- `types-PyYAML`, `types-jsonschema` added to dev dependencies for mypy 2.x compatibility
+
+### Fixed
+- CI type-check job now passes under mypy 2.x (stricter `import-untyped` handling)
+- CI integration test job: added `--override-ini="addopts="` to resolve pytest-cov conflict
+- `[[tool.mypy.overrides]]` added for `jinja2`, `sqlite_vec`, `fastembed` to suppress `ignore_missing_imports`
+
+---
+
 ## [1.0.0] — 2026-05-13
 
 ### Added

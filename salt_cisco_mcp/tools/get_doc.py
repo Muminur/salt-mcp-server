@@ -26,7 +26,6 @@ def get_doc_logic(store: DocStore, anchor_url: str) -> dict[str, Any] | None:
     url = str(row.get("url", ""))
     anchor = str(row.get("anchor", ""))
     return {
-        "chunk_id": row["id"],
         "text": row["text"],
         "anchor_url": url + anchor,
         "heading": row["heading"],

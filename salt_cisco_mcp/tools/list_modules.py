@@ -24,19 +24,25 @@ def _module_name_from_url(url: str) -> str:
     return name
 
 
+_DEFAULT_LIMIT = 200
+_MAX_LIMIT = 1000
+
+
 def list_modules_logic(
     store: DocStore,
     kind: str | None = None,
+    limit: int = _DEFAULT_LIMIT,
 ) -> list[dict[str, Any]]:
     """Return distinct modules from the doc index, optionally filtered by kind."""
     rows = store.list_module_urls(kind=kind)
+    capped = min(limit if limit > 0 else _MAX_LIMIT, _MAX_LIMIT)
     return [
         {
             "url": row["url"],
             "kind": row["kind"],
             "name": _module_name_from_url(str(row["url"])),
         }
-        for row in rows
+        for row in rows[:capped]
     ]
 
 
@@ -46,12 +52,14 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
     @mcp.tool()
     async def list_modules(
         kind: str | None = None,
+        limit: int = _DEFAULT_LIMIT,
         ctx: Context = ...,  # type: ignore[assignment,type-arg]
     ) -> list[dict[str, Any]]:
         """Enumerate Salt 3007 modules indexed in the offline doc store.
 
         Args:
             kind: Filter by 'module', 'state', 'proxy', 'runner', or None for all.
+            limit: Max modules to return (default 200, max 1000).
         """
         app_state = ctx.request_context.lifespan_context
-        return list_modules_logic(app_state.store, kind=kind)
+        return list_modules_logic(app_state.store, kind=kind, limit=limit)

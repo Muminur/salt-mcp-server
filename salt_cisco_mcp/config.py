@@ -86,6 +86,7 @@ class RetrievalConfig(BaseModel):
 
     default_tier: str = "focused"
     default_max_tokens: int = 1500
+    default_response_tokens: int = 2000
     hard_cap_tokens: int = 8000
     embeddings: EmbeddingsConfig = Field(default_factory=EmbeddingsConfig)
     reranker: RerankerConfig = Field(default_factory=RerankerConfig)

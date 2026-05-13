@@ -79,7 +79,7 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
     @mcp.tool()
     async def search_docs(
         query: str,
-        top_k: int = 10,
+        top_k: int = 5,
         token_budget: int | None = None,
         ctx: Context = ...,  # type: ignore[assignment,type-arg]
     ) -> dict[str, Any]:
@@ -90,7 +90,7 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
         """
         t0 = time.perf_counter()
         app_state = ctx.request_context.lifespan_context
-        budget = token_budget if token_budget is not None else settings.retrieval.hard_cap_tokens
+        budget = token_budget if token_budget is not None else settings.retrieval.default_response_tokens
         result = search_docs_logic(
             app_state.store,
             query,

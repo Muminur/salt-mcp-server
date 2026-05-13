@@ -50,14 +50,15 @@ Once connected, your agent can call:
 
 | Tool | Purpose |
 |---|---|
-| `search_docs` | Hybrid BM25 + vector search over 5,000+ Salt 3007 module docs |
-| `get_doc` | Full doc chunk for a specific anchor URL |
-| `list_modules` | Enumerate available Salt modules by kind |
-| `live_fetch` | Fetch a live page from docs.saltproject.io (ETag-cached) |
+| `search_docs(query, top_k?, brief?)` | Hybrid BM25 + vector search over Salt 3007 module docs. `brief=True` returns citations only (no text) for fast scanning. |
+| `get_doc(anchor_url)` | Full doc chunk for a specific anchor URL |
+| `list_modules(kind?, limit?)` | Enumerate available Salt modules by kind (default limit: 200) |
+| `list_loaded_functions(prefix?, limit?)` | List functions loaded on the master (default limit: 200) |
+| `live_fetch(url)` | Fetch a live page from docs.saltproject.io, capped at 16 KB |
 | `confirm_function_exists` | Verify a Salt function is actually loaded |
 | `list_minions` | List connected Salt proxy minions |
-| `get_grains` | Retrieve minion grains |
-| `get_pillar` | Retrieve redacted pillar data |
+| `get_grains(minion_id?, keys?)` | Retrieve minion grains (capped at 50 keys) |
+| `get_pillar(minion_id?)` | Retrieve redacted pillar data (capped at 50 top-level keys) |
 | `validate_pillar` | Validate proxy pillar YAML against JSON schema |
 | `validate_state` | Lint SLS state structure |
 | `render_jinja` | Preview Jinja template output (sandboxed) |
@@ -69,6 +70,26 @@ Once connected, your agent can call:
 | `push_config`* | Push config snippet (requires `--allow-write`) |
 
 *Write tools are only registered when `allow_write: true` in config. Every write call requires a `confirm_token`.
+
+---
+
+## Token efficiency
+
+All tool responses are designed for minimal LLM token consumption:
+
+| Mode | Typical P50 | Typical P95 |
+|---|---|---|
+| Standard `search_docs` | ~223 tokens | ~1 200 tokens |
+| `search_docs(brief=True)` | ~90 tokens | ~305 tokens |
+
+`brief=True` returns only citation fields (`module`, `function`, `anchor_url`, `doc_hash`) with no body text — useful for scan-then-read workflows where the agent first finds the right anchor, then calls `get_doc` for the full text.
+
+Response caps that prevent runaway token use:
+
+- `live_fetch` — content capped at 16 000 characters
+- `get_grains` — capped at 50 keys; returns `total` + `truncated: true` when exceeded
+- `get_pillar` — capped at 50 top-level keys; returns `total_keys` + `truncated: true`
+- `list_loaded_functions` / `list_modules` — default limit 200, configurable up to 500/1000
 
 ---
 
@@ -138,7 +159,7 @@ make scan       # pip-audit --strict (dependency CVE scan)
 
 ---
 
-## Audit Log
+## Audit log
 
 When write tools are enabled, every operation is recorded as a JSONL line in `~/.salt-mcp/audit.jsonl`. The log contains hashed tokens — never raw credentials. See [docs/runbook.md](docs/runbook.md) for rotation instructions.
 

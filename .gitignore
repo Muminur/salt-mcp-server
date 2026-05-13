@@ -21,3 +21,14 @@ CLAUDE.md
 PLANNING.md
 TASKS.md
 PRD-salt-cisco-mcp.md
+PRD.md
+PRD.docx
+PLAN.md
+*.prd
+*.credentials
+secrets.*
+
+# Claude Code / AI tooling — local only
+.claude/
+autoresearch/.regression-baseline
+benchmark-result.json

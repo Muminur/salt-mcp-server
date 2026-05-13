@@ -1,0 +1,11 @@
+iter	status	p50_tokens	p95_tokens	avg_tokens	description
+0	baseline	252	1316	372.1	baseline — no changes
+1	keep	233	1240	351.4	remove score and chunk_id fields (-7.5% P50)
+2	keep	233	1240	351.4	add default_response_tokens=2000 as default budget (no benchmark change; prevents 8K responses in prod)
+3	keep	233	1240	351.4	lower search_docs top_k default 10→5 (no benchmark change; halves results for broad queries in prod)
+4	keep	233	1240	351.4	add 200-result default limit to list_loaded_functions + list_modules (prevents multi-KB list responses)
+5	keep	223	1202	333.5	eliminate N+1 DB queries + remove redundant heading field (-4.3% P50)
+6	keep	223	1202	333.5	cap live_fetch content at 16K chars (unbounded prod risk ~50KB+)
+7	keep	223	1202	333.5	remove chunk_id from get_doc response
+8	keep	223/90*	1202/305*	333.5/97*	add brief=True scan mode (-60% P50, -75% P95 when used)
+9	keep	223	1202	333.5	cap get_grains + get_pillar at 50 top-level keys (production safeguard, benchmark unchanged)

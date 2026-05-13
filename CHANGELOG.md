@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] — Token-efficiency pass
+
+### Added
+- `search_docs`: new `brief: bool = False` parameter — when `True`, returns citation fields only (no `text`), reducing P50 tokens by ~60% for scan-then-read workflows
+- `list_loaded_functions`: new `limit` parameter (default 200, max 500) with `total` + `truncated` response fields to prevent unbounded list responses
+- `list_modules`: new `limit` parameter (default 200, max 1000) with `total` + `truncated` response fields
+- `live_fetch`: content now capped at 16 000 characters (~4K tokens); returns `truncated: True` when exceeded
+- `get_grains`: responses capped at 50 top-level keys by default; returns `total` + `truncated: True` when capped
+- `get_pillar`: responses capped at 50 top-level keys by default; returns `total_keys` + `truncated: True` when capped
+- `RetrievalConfig.default_response_tokens` (default 2000): controls the default token budget for `search_docs` responses
+
+### Changed ⚠️ BREAKING
+- `search_docs` response items no longer include `score` or `chunk_id` fields
+- `search_docs` response items no longer include `heading` field (use `function` — identical value)
+- `search_docs` default `top_k` changed 10 → 5
+- `get_doc` response no longer includes `chunk_id` field
+- `search_docs` default token budget is now `default_response_tokens` (2000) instead of `hard_cap_tokens`
+
+### Performance
+- Baseline P50: 252 tokens → 223 tokens (−11.5%); P95: 1316 → 1202 (−8.7%)
+- Brief mode P50: 90 tokens (−64% vs standard); P95: 305 tokens (−75%)
+- Eliminated N+1 DB queries in `search_docs` — URL now read from FTS5 result row directly
+
+---
+
 ## [1.1.0] — 2026-05-13
 
 ### Added

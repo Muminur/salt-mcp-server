@@ -30,5 +30,5 @@ secrets.*
 
 # Claude Code / AI tooling — local only
 .claude/
-autoresearch/.regression-baseline
+autoresearch/
 benchmark-result.json

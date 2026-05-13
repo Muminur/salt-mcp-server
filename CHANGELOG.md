@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- Python 3.10 compatibility: `tomllib` (stdlib 3.11+) replaced with conditional import using `tomli>=2` fallback
+- Ruff E501: split long lines in `debug_failing_state.py` and `search_docs.py` to satisfy 100-char limit
+- CI: `test_docs_present_at_repo_root` now skips in GitHub Actions where local-only project docs are intentionally absent (gitignored)
+- `test_readme_has_quickstart_content` now reads with explicit `encoding="utf-8"` to prevent cp1252 failures on Windows runners
+- Expanded `.gitignore`: covers `autoresearch/`, `PRD.md`, `PRD.docx`, `PLAN.md`, `*.credentials`, `secrets.*`, `.claude/`
+
+---
+
 ## [Unreleased] — Token-efficiency pass
 
 ### Added

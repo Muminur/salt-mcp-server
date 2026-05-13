@@ -57,12 +57,10 @@ def search_docs_logic(
         module = _module_name_from_url(url) if url else ""
         items.append(
             {
-                "chunk_id": r.chunk_id,
                 "text": r.text,
                 "anchor_url": anchor_url,
                 "heading": r.heading,
                 "kind": r.kind,
-                "score": r.score,
                 "doc_hash": r.doc_hash,
                 "module": module,
                 "function": r.heading,

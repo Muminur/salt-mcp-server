@@ -56,12 +56,10 @@ def test_search_docs_logic_result_items_have_citation_fields() -> None:
     assert len(result["results"]) >= 1
     r = result["results"][0]
     expected_fields = (
-        "chunk_id",
         "text",
         "anchor_url",
         "heading",
         "kind",
-        "score",
         "doc_hash",
         "module",
         "function",

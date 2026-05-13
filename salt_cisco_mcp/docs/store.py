@@ -6,6 +6,13 @@ from typing import Any
 from salt_cisco_mcp.docs.chunker import Chunk
 from salt_cisco_mcp.docs.normalizer import PageMeta
 
+_SCHEMA_VEC = """
+CREATE VIRTUAL TABLE IF NOT EXISTS chunks_vec USING vec0(
+    chunk_id INTEGER PRIMARY KEY,
+    embedding float[{dim}]
+);
+"""
+
 _SCHEMA_CHUNKS = """
 CREATE TABLE IF NOT EXISTS chunks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -172,6 +179,45 @@ class DocStore:
         cur.execute("SELECT COUNT(*) FROM chunks")
         result = cur.fetchone()
         return int(result[0]) if result else 0
+
+    def load_vec_extension(self) -> None:
+        """Load the sqlite-vec extension into this connection."""
+        import sqlite_vec  # type: ignore[import-untyped]
+
+        self._conn.enable_load_extension(True)
+        sqlite_vec.load(self._conn)
+        self._conn.enable_load_extension(False)
+
+    def init_vec_schema(self, dim: int) -> None:
+        """Create the chunks_vec virtual table with *dim*-dimensional embeddings."""
+        self._conn.executescript(_SCHEMA_VEC.format(dim=dim))
+        self._conn.commit()
+
+    def upsert_embedding(self, chunk_id: int, embedding: list[float]) -> None:
+        """Insert or replace an embedding vector for *chunk_id*."""
+        import struct
+
+        blob = struct.pack(f"{len(embedding)}f", *embedding)
+        cur = self._conn.cursor()
+        cur.execute(
+            "INSERT OR REPLACE INTO chunks_vec(chunk_id, embedding) VALUES(?, ?)",
+            (chunk_id, blob),
+        )
+        self._conn.commit()
+
+    def vec_search(self, query_embedding: list[float], limit: int = 10) -> list[dict[str, Any]]:
+        """Return the *limit* nearest chunks by L2 distance to *query_embedding*."""
+        import struct
+
+        blob = struct.pack(f"{len(query_embedding)}f", *query_embedding)
+        cur = self._conn.cursor()
+        cur.execute(
+            "SELECT chunk_id, distance FROM chunks_vec "
+            "WHERE embedding MATCH ? AND k=? "
+            "ORDER BY distance",
+            (blob, limit),
+        )
+        return [{"chunk_id": int(row[0]), "distance": float(row[1])} for row in cur.fetchall()]
 
     def close(self) -> None:
         self._conn.close()

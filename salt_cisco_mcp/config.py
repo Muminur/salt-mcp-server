@@ -74,6 +74,13 @@ class EmbeddingsConfig(BaseModel):
     device: str = "cpu"
 
 
+class RerankerConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    model: str = "BAAI/bge-reranker-base"
+
+
 class RetrievalConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -81,6 +88,7 @@ class RetrievalConfig(BaseModel):
     default_max_tokens: int = 1500
     hard_cap_tokens: int = 8000
     embeddings: EmbeddingsConfig = Field(default_factory=EmbeddingsConfig)
+    reranker: RerankerConfig = Field(default_factory=RerankerConfig)
     rrf_k: int = 60
     low_confidence_bm25: float = 1.0
     low_confidence_cosine: float = 0.55

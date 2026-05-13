@@ -1,0 +1,93 @@
+# Golden-query test set for salt-cisco-mcp retrieval validation.
+# Each case seeds an in-memory DocStore with a minimal chunk and asserts
+# that BM25 search returns a result whose anchor contains expected_anchor_fragment.
+queries:
+  - id: gq001
+    query: "napalm bgp neighbors"
+    expected_anchor_fragment: "bgp_neighbors"
+    chunk:
+      anchor: "#napalm.bgp_neighbors"
+      heading: "napalm.bgp_neighbors"
+      text: "Get BGP neighbors from a network device using NAPALM proxy minion. Returns a dictionary of BGP neighbors keyed by peer address."
+      kind: module
+
+  - id: gq002
+    query: "ntp set servers ios"
+    expected_anchor_fragment: "ntp"
+    chunk:
+      anchor: "#ntp.set_servers"
+      heading: "ntp.set_servers"
+      text: "Set NTP servers on an IOS device using Salt ntp module. Accepts a list of server IP addresses."
+      kind: module
+
+  - id: gq003
+    query: "interface description gigabitethernet"
+    expected_anchor_fragment: "interface"
+    chunk:
+      anchor: "#interface.set_description"
+      heading: "interface.set_description"
+      text: "Set description on a GigabitEthernet interface. Uses napalm proxy to configure interface description on IOS and IOS-XR devices."
+      kind: module
+
+  - id: gq004
+    query: "ospf neighbors topology"
+    expected_anchor_fragment: "ospf"
+    chunk:
+      anchor: "#ospf.neighbors"
+      heading: "ospf.neighbors"
+      text: "Get OSPF neighbors and topology from a Cisco device. Returns neighbor router-id, interface, state, and topology adjacency details."
+      kind: module
+
+  - id: gq005
+    query: "vlan list all vlans nxos"
+    expected_anchor_fragment: "vlan"
+    chunk:
+      anchor: "#vlan.list"
+      heading: "vlan.list"
+      text: "List all VLANs configured on a Nexus nxos device. Returns VLAN ID, name, and state for each VLAN entry."
+      kind: module
+
+  - id: gq006
+    query: "acl show access control list"
+    expected_anchor_fragment: "acl"
+    chunk:
+      anchor: "#acl.show"
+      heading: "acl.show"
+      text: "Show access-control list (ACL) configuration on a Cisco device. Returns ACL name, entries, and hit counts."
+      kind: module
+
+  - id: gq007
+    query: "pillar get device credentials"
+    expected_anchor_fragment: "pillar"
+    chunk:
+      anchor: "#pillar.get"
+      heading: "pillar.get"
+      text: "Get a value from the Salt pillar for a device. Returns credentials and pillar values for the given key path, with optional default."
+      kind: module
+
+  - id: gq008
+    query: "state apply highstate salt run"
+    expected_anchor_fragment: "state"
+    chunk:
+      anchor: "#state.apply"
+      heading: "state.apply"
+      text: "Apply Salt states to a minion. Runs the highstate or a specific SLS file, returning detailed result data."
+      kind: module
+
+  - id: gq009
+    query: "grains get operating system version"
+    expected_anchor_fragment: "grains"
+    chunk:
+      anchor: "#grains.get"
+      heading: "grains.get"
+      text: "Get a grain value from the minion. Reports operating system and version information. Supports dot-notation key paths. Returns the grain value or default."
+      kind: module
+
+  - id: gq010
+    query: "snmp walk community string oid"
+    expected_anchor_fragment: "snmp"
+    chunk:
+      anchor: "#snmp.walk"
+      heading: "snmp.walk"
+      text: "Perform an SNMP walk on a device using the configured community string. Returns OID-value pairs."
+      kind: module

@@ -123,3 +123,78 @@ def test_store_anchor_round_trips_through_search() -> None:
     assert retrieved is not None
     assert retrieved["anchor"] == expected_anchor
     store.close()
+
+
+def test_store_load_vec_extension() -> None:
+    """load_vec_extension() succeeds and enables sqlite-vec."""
+    store = DocStore(":memory:")
+    store.init_schema()
+    store.load_vec_extension()
+    store.close()
+
+
+def test_store_init_vec_table_creates_chunks_vec() -> None:
+    """init_vec_schema() creates the chunks_vec virtual table."""
+    store = DocStore(":memory:")
+    store.init_schema()
+    store.load_vec_extension()
+    store.init_vec_schema(dim=4)
+    count = store.count_chunks()
+    assert count == 0
+    store.close()
+
+
+def test_store_upsert_embedding_and_vec_search() -> None:
+    """upsert_embedding() stores a vector; vec_search() returns it as nearest neighbor."""
+    store = DocStore(":memory:")
+    store.init_schema()
+    store.load_vec_extension()
+    store.init_vec_schema(dim=4)
+
+    chunk_id = store.upsert_chunk(_CHUNK, _META, doc_hash="vec-test")
+    embedding = [1.0, 0.0, 0.0, 0.0]
+    store.upsert_embedding(chunk_id, embedding)
+
+    results = store.vec_search(embedding, limit=5)
+    assert len(results) >= 1
+    assert results[0]["chunk_id"] == chunk_id
+    store.close()
+
+
+def test_store_vec_search_nearest_neighbor_ordering() -> None:
+    """vec_search() returns closest vector first."""
+    from salt_cisco_mcp.docs.normalizer import PageMeta as PM
+
+    store = DocStore(":memory:")
+    store.init_schema()
+    store.load_vec_extension()
+    store.init_vec_schema(dim=4)
+
+    meta_a = PM(
+        title="A", anchor="#a", breadcrumb="", kind="module",
+        salt_version="3007",
+        url="https://docs.saltproject.io/en/3007/a.html",
+    )
+    meta_b = PM(
+        title="B", anchor="#b", breadcrumb="", kind="module",
+        salt_version="3007",
+        url="https://docs.saltproject.io/en/3007/b.html",
+    )
+    chunk_a = Chunk(text="AAA", heading="A", anchor="#a-0", token_count=1, kind="module")
+    chunk_b = Chunk(text="BBB", heading="B", anchor="#b-0", token_count=1, kind="module")
+
+    id_a = store.upsert_chunk(chunk_a, meta_a, doc_hash="ha")
+    id_b = store.upsert_chunk(chunk_b, meta_b, doc_hash="hb")
+
+    store.upsert_embedding(id_a, [1.0, 0.0, 0.0, 0.0])
+    store.upsert_embedding(id_b, [0.0, 1.0, 0.0, 0.0])
+
+    # Query near A
+    results = store.vec_search([0.9, 0.1, 0.0, 0.0], limit=2)
+    assert results[0]["chunk_id"] == id_a
+
+    # Query near B
+    results = store.vec_search([0.1, 0.9, 0.0, 0.0], limit=2)
+    assert results[0]["chunk_id"] == id_b
+
+    store.close()

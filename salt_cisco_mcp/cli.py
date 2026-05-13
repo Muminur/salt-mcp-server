@@ -25,6 +25,12 @@ def _build_parser() -> argparse.ArgumentParser:
     serve_p.add_argument("--port", type=int, default=7842)
     serve_p.add_argument("--allow-write", action="store_true", default=False)
     serve_p.add_argument("--config", metavar="PATH", default=None)
+    serve_p.add_argument(
+        "--no-embeddings",
+        action="store_true",
+        default=False,
+        help="Disable vector embeddings; use BM25-only search (faster cold-start).",
+    )
 
     # install
     install_p = sub.add_parser("install", help="Bootstrap config dirs and write a starter config.")
@@ -74,6 +80,8 @@ def main(argv: list[str] | None = None) -> None:
             settings.server.http_port = args.port
         if args.allow_write:
             settings.server.allow_write = True
+        if getattr(args, "no_embeddings", False):
+            settings.retrieval.embeddings.enabled = False
         from salt_cisco_mcp.transports import run_server
 
         run_server(settings)

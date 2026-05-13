@@ -14,9 +14,12 @@ def debug_failing_state_logic(error: str, sls: str) -> str:
     """Return a diagnostic prompt for debugging a failing Salt state."""
     return (
         f"Diagnose failing Salt state.\nSLS: {sls}\nError: {error}\n\n"
-        "Steps: get_pillar → search_docs(error) → confirm_function_exists → validate_state → state_test → get_grains\n\n"
-        "Common causes: missing proxy: pillar, wrong NAPALM driver, connectivity, function hallucination, old syntax.\n\n"
-        "Output: root cause + fix (SLS/pillar snippet) + citation {{module, function, anchor_url}}\n"
+        "Steps: get_pillar → search_docs(error) → confirm_function_exists"
+        " → validate_state → state_test → get_grains\n\n"
+        "Common causes: missing proxy: pillar, wrong NAPALM driver,"
+        " connectivity, function hallucination, old syntax.\n\n"
+        "Output: root cause + fix (SLS/pillar snippet)"
+        " + citation {{module, function, anchor_url}}\n"
     )
 
 

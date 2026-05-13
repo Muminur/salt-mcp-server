@@ -95,7 +95,11 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
         """
         t0 = time.perf_counter()
         app_state = ctx.request_context.lifespan_context
-        budget = token_budget if token_budget is not None else settings.retrieval.default_response_tokens
+        budget = (
+            token_budget
+            if token_budget is not None
+            else settings.retrieval.default_response_tokens
+        )
         result = search_docs_logic(
             app_state.store,
             query,

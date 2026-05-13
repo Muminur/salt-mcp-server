@@ -1,7 +1,11 @@
 import importlib
+import sys
 from pathlib import Path
 
-import tomllib  # type: ignore[import-not-found]
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib  # type: ignore[no-redef]
 
 
 def test_import_mcp() -> None:

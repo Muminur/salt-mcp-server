@@ -16,6 +16,7 @@ class SearchResult:
     kind: str
     score: float
     doc_hash: str
+    url: str = ""
 
 
 def bm25_search(store: DocStore, query: str, limit: int = 10) -> list[SearchResult]:
@@ -38,6 +39,7 @@ def bm25_search(store: DocStore, query: str, limit: int = 10) -> list[SearchResu
                 kind=str(row.get("kind", "")),
                 score=-float(row.get("rank", 0.0)),
                 doc_hash=str(row.get("doc_hash", "")),
+                url=str(row.get("url", "")),
             )
         )
     return results
@@ -89,6 +91,7 @@ def hybrid_search(
                     kind=str(row.get("kind", "")),
                     score=rrf_scores.get(cid, 0.0),
                     doc_hash=str(row.get("doc_hash", "")),
+                    url=str(row.get("url", "")),
                 )
 
     merged = sorted(by_id.values(), key=lambda r: rrf_scores.get(r.chunk_id, 0.0), reverse=True)

@@ -59,8 +59,8 @@ def test_known_function_resolves_in_index(fn_name: str, query: str) -> None:
     store.close()
 
     assert result["total"] >= 1, f"No results for query: {query!r}"
-    # The function name must appear in at least one result heading or text
-    headings_and_texts = [(r["heading"] + " " + r["text"]).lower() for r in result["results"]]
+    # The function name must appear in at least one result function or text
+    headings_and_texts = [(r["function"] + " " + r["text"]).lower() for r in result["results"]]
     fn_module = fn_name.split(".")[0].lower()
     assert any(fn_module in ht for ht in headings_and_texts), (
         f"Function module '{fn_module}' not found in results for '{fn_name}'"

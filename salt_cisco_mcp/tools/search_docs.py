@@ -51,15 +51,13 @@ def search_docs_logic(
 
     items = []
     for r in results:
-        chunk_row = store.get_chunk_by_id(r.chunk_id)
-        url = chunk_row["url"] if chunk_row else ""
+        url = r.url
         anchor_url = url + r.anchor if url else r.anchor
         module = _module_name_from_url(url) if url else ""
         items.append(
             {
                 "text": r.text,
                 "anchor_url": anchor_url,
-                "heading": r.heading,
                 "kind": r.kind,
                 "doc_hash": r.doc_hash,
                 "module": module,

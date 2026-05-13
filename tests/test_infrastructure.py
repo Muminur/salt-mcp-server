@@ -1,5 +1,7 @@
+import os
 from pathlib import Path
 
+import pytest
 import yaml
 
 REPO_ROOT = Path(__file__).parent.parent
@@ -35,7 +37,7 @@ def test_license_exists() -> None:
 def test_readme_has_quickstart_content() -> None:
     readme = REPO_ROOT / "README.md"
     assert readme.exists()
-    content = readme.read_text()
+    content = readme.read_text(encoding="utf-8")
     keywords = ["install", "quickstart", "salt-cisco-mcp", "pip"]
     matches = sum(1 for kw in keywords if kw in content)
     assert matches >= 3
@@ -55,6 +57,10 @@ def test_python_version_file() -> None:
     assert pv.read_text().strip() == "3.11"
 
 
+@pytest.mark.skipif(
+    os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true",
+    reason="Local-only project management docs are gitignored and not present in CI",
+)
 def test_docs_present_at_repo_root() -> None:
     for f in ("CLAUDE.md", "PLANNING.md", "TASKS.md", "PRD-salt-cisco-mcp.md"):
         assert (REPO_ROOT / f).exists(), f"{f} is missing from repo root"

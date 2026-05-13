@@ -69,3 +69,30 @@ def test_cli_serve_invokes_run_server() -> None:
     with patch("salt_cisco_mcp.transports.run_server") as mock_run:
         main(argv=["serve"])
     mock_run.assert_called_once()
+
+
+def test_cli_serve_no_embeddings_flag_accepted() -> None:
+    """serve --no-embeddings is a recognised flag (exits zero for --help)."""
+    result = subprocess.run(
+        [sys.executable, "-m", "salt_cisco_mcp.cli", "serve", "--help"],
+        capture_output=True,
+    )
+    assert result.returncode == 0
+    assert b"no-embeddings" in result.stdout or b"embeddings" in result.stdout
+
+
+def test_cli_serve_no_embeddings_disables_embeddings() -> None:
+    """serve --no-embeddings sets retrieval.embeddings.enabled=False before run_server."""
+    captured_settings: list[object] = []
+
+    def fake_run_server(settings: object) -> None:
+        captured_settings.append(settings)
+
+    with patch("salt_cisco_mcp.transports.run_server", side_effect=fake_run_server):
+        main(argv=["serve", "--no-embeddings"])
+
+    assert len(captured_settings) == 1
+    from salt_cisco_mcp.config import Settings
+    s = captured_settings[0]
+    assert isinstance(s, Settings)
+    assert s.retrieval.embeddings.enabled is False

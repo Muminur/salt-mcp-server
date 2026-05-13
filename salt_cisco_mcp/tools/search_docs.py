@@ -35,6 +35,7 @@ def search_docs_logic(
     token_budget: int | None = None,
     low_confidence_threshold: float = 1.0,
     *,
+    brief: bool = False,
     live_fallback_enabled: bool = False,
     upstream_base: str = "",
 ) -> dict[str, Any]:
@@ -54,16 +55,16 @@ def search_docs_logic(
         url = r.url
         anchor_url = url + r.anchor if url else r.anchor
         module = _module_name_from_url(url) if url else ""
-        items.append(
-            {
-                "text": r.text,
-                "anchor_url": anchor_url,
-                "kind": r.kind,
-                "doc_hash": r.doc_hash,
-                "module": module,
-                "function": r.heading,
-            }
-        )
+        item: dict[str, Any] = {
+            "anchor_url": anchor_url,
+            "kind": r.kind,
+            "doc_hash": r.doc_hash,
+            "module": module,
+            "function": r.heading,
+        }
+        if not brief:
+            item["text"] = r.text
+        items.append(item)
 
     out: dict[str, Any] = {"results": items, "low_confidence": low_confidence, "total": len(items)}
     if len(items) == 0 and live_fallback_enabled and upstream_base:
@@ -79,12 +80,18 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
         query: str,
         top_k: int = 5,
         token_budget: int | None = None,
+        brief: bool = False,
         ctx: Context = ...,  # type: ignore[assignment,type-arg]
     ) -> dict[str, Any]:
         """Search Salt 3007 documentation and return cited chunks.
 
         Returns chunks with citation tuples {module, anchor_url, doc_hash}.
         Always call this before writing any Salt code.
+
+        Args:
+            brief: When True, return citation fields only (no text). Use for
+                   scanning multiple topics before calling get_doc for full text.
+                   Reduces tokens by ~80% per result.
         """
         t0 = time.perf_counter()
         app_state = ctx.request_context.lifespan_context
@@ -94,6 +101,7 @@ def register(mcp: FastMCP[Any], settings: Settings) -> None:
             query,
             top_k=top_k,
             token_budget=budget,
+            brief=brief,
             low_confidence_threshold=settings.retrieval.low_confidence_bm25,
             live_fallback_enabled=settings.network.live_fallback,
             upstream_base=settings.network.upstream_base,
